@@ -84,11 +84,9 @@ model Study {
 model Task {
   id Int @id @default(autoincrement())
 
-  /// @Validator.MinLength(3)
-  /// @Validator.MaxLength(128)
   name String @db.VarChar(128)
 
-  /// @Validator.MinLength(3)
+  /// @Validator.MinLength(1)
   /// @Validator.MaxLength(500)
   text String @db.VarChar(500)
 
