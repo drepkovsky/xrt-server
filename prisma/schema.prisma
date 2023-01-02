@@ -1,64 +1,71 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-generator nestgraphql {
-  provider               = "node node_modules/prisma-nestjs-graphql"
-  output                 = "../src/@generated/prisma-nestjs-graphql"
-  fields_Validator_from  = "class-validator"
-  fields_Validator_input = true
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+generator client {
+  provider = "prisma-client-js"
+}
+
 model User {
-  id       Int        @id @default(autoincrement())
-  email    String     @unique @db.VarChar(255)
-  name     String?    @db.VarChar(255)
-  projects Project[]
-  studies  Study[]
-  tasks    Task[]
-  password Password[]
-}
-
-model Password {
-  id     Int    @id @default(autoincrement())
-  hash   String @db.VarChar(255)
-  user   User   @relation(fields: [userId], references: [id])
-  userId Int
-}
-
-model Project {
   id Int @id @default(autoincrement())
 
-  token String @unique @default(cuid())
+  /// @Validator.IsEmail()
+  email String @unique @db.VarChar(255)
 
+  /// @Validator.MinLength(3)
+  /// @Validator.MaxLength(128)
+  name    String? @db.VarChar(128)
+  studies Study[]
+  tokens  Token[]
+
+  /// @HideField()
+  /// @Validator.MinLength(6)
+  /// @Validator.MaxLength(128)
+  password String? @db.VarChar(128)
+}
+
+model Token {
+  id Int @id @default(autoincrement())
+
+  /// @Validaor.MinLength(3)
+  /// @Validator.MaxLength(128)
   name String @db.VarChar(128)
 
-  description String @db.VarChar(256)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  studies   Study[]
+  token String @default(cuid()) @db.VarChar(255)
 
   createdBy   User @relation(fields: [createdById], references: [id])
   createdById Int
+
+  Study Study[]
+}
+
+enum StudyStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
 }
 
 model Study {
-  id   Int    @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
+  /// @Validator.MinLength(3)
+  /// @Validator.MaxLength(128)
   name String @db.VarChar(128)
 
-  description String @db.VarChar(256)
+  status StudyStatus @default(DRAFT)
 
-  project     Project  @relation(fields: [projectId], references: [id])
-  projectId   Int
+  /// @Validator.MinLength(0)
+  /// @Validator.MaxLength(128)
+  /// @Validator.IsOptional()
+  description String? @db.VarChar(128)
+
+  token   Token? @relation(fields: [tokenId], references: [id])
+  tokenId Int?
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   createdBy   User     @relation(fields: [createdById], references: [id])
@@ -75,19 +82,24 @@ model Study {
 }
 
 model Task {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(255)
-  text String @db.VarChar(255)
+  id Int @id @default(autoincrement())
+
+  /// @Validator.MinLength(3)
+  /// @Validator.MaxLength(128)
+  name String @db.VarChar(128)
+
+  /// @Validator.MinLength(3)
+  /// @Validator.MaxLength(500)
+  text String @db.VarChar(500)
 
   study   Study @relation(fields: [studyId], references: [id])
   studyId Int
 
   isRequired Boolean @default(false)
 
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  User           User?            @relation(fields: [userId], references: [id])
-  userId         Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   RespondentTask RespondentTask[]
 }
 
@@ -96,8 +108,9 @@ model Respondent {
 
   identifier String @db.VarChar(255)
 
-  study          Study            @relation(fields: [studyId], references: [id])
-  studyId        Int
+  study   Study @relation(fields: [studyId], references: [id])
+  studyId Int
+
   answers        Answer[]
   RespondentTask RespondentTask[]
 }
@@ -113,6 +126,8 @@ model Questionnaire {
 model Question {
   id Int @id @default(autoincrement())
 
+  /// @Validator.MinLength(3)
+  /// @Validator.MaxLength(500)
   text String @db.Text
 
   type QuestionType
@@ -135,6 +150,8 @@ enum QuestionType {
 model Option {
   id Int @id @default(autoincrement())
 
+  /// @Validator.MinLength(1)
+  /// @Validator.MaxLength(255)
   text String @db.VarChar(255)
 
   question   Question @relation(fields: [questionId], references: [id])
@@ -148,6 +165,8 @@ model Answer {
   question   Question @relation(fields: [questionId], references: [id])
   questionId Int
 
+  /// @Validator.MinLength(1)
+  /// @Validator.MaxLength(255)
   text String? @db.VarChar(255)
 
   option   Option? @relation(fields: [optionId], references: [id])
@@ -167,7 +186,6 @@ model RespondentTask {
   taskId Int
 
   completedAt DateTime?
-  startedAt   DateTime?
-
-  skippedAt DateTime?
+  skippedAt   DateTime?
+  createdAt   DateTime  @default(now())
 }

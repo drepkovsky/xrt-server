@@ -1,43 +1,36 @@
 -- CreateEnum
+CREATE TYPE "StudyStatus" AS ENUM ('DRAFT', 'ACTIVE', 'COMPLETED');
+
+-- CreateEnum
 CREATE TYPE "QuestionType" AS ENUM ('SINGLE_LINE', 'MULTI_LINE', 'NUMBER', 'RADIO', 'CHECKBOX', 'SELECT');
 
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" VARCHAR(255) NOT NULL,
-    "name" VARCHAR(255),
+    "name" VARCHAR(128),
+    "password" VARCHAR(128),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Password" (
+CREATE TABLE "Token" (
     "id" SERIAL NOT NULL,
-    "hash" VARCHAR(255) NOT NULL,
-    "userId" INTEGER NOT NULL,
-
-    CONSTRAINT "Password_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Project" (
-    "id" SERIAL NOT NULL,
-    "token" TEXT NOT NULL,
     "name" VARCHAR(128) NOT NULL,
-    "description" VARCHAR(256) NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "token" VARCHAR(255) NOT NULL,
     "createdById" INTEGER NOT NULL,
 
-    CONSTRAINT "Project_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Token_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Study" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(128) NOT NULL,
-    "description" VARCHAR(256) NOT NULL,
-    "projectId" INTEGER NOT NULL,
+    "status" "StudyStatus" NOT NULL DEFAULT 'DRAFT',
+    "description" VARCHAR(128),
+    "tokenId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "createdById" INTEGER NOT NULL,
@@ -50,13 +43,12 @@ CREATE TABLE "Study" (
 -- CreateTable
 CREATE TABLE "Task" (
     "id" SERIAL NOT NULL,
-    "name" VARCHAR(255) NOT NULL,
-    "text" VARCHAR(255) NOT NULL,
+    "name" VARCHAR(128) NOT NULL,
+    "text" VARCHAR(500) NOT NULL,
     "studyId" INTEGER NOT NULL,
     "isRequired" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "userId" INTEGER,
 
     CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
 );
@@ -113,8 +105,8 @@ CREATE TABLE "RespondentTask" (
     "respondentId" INTEGER NOT NULL,
     "taskId" INTEGER NOT NULL,
     "completedAt" TIMESTAMP(3),
-    "startedAt" TIMESTAMP(3),
     "skippedAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "RespondentTask_pkey" PRIMARY KEY ("id")
 );
@@ -122,17 +114,11 @@ CREATE TABLE "RespondentTask" (
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
--- CreateIndex
-CREATE UNIQUE INDEX "Project_token_key" ON "Project"("token");
+-- AddForeignKey
+ALTER TABLE "Token" ADD CONSTRAINT "Token_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Password" ADD CONSTRAINT "Password_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Project" ADD CONSTRAINT "Project_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Study" ADD CONSTRAINT "Study_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Study" ADD CONSTRAINT "Study_tokenId_fkey" FOREIGN KEY ("tokenId") REFERENCES "Token"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Study" ADD CONSTRAINT "Study_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -145,9 +131,6 @@ ALTER TABLE "Study" ADD CONSTRAINT "Study_postStudyQuestionnaireId_fkey" FOREIGN
 
 -- AddForeignKey
 ALTER TABLE "Task" ADD CONSTRAINT "Task_studyId_fkey" FOREIGN KEY ("studyId") REFERENCES "Study"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Task" ADD CONSTRAINT "Task_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Respondent" ADD CONSTRAINT "Respondent_studyId_fkey" FOREIGN KEY ("studyId") REFERENCES "Study"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
