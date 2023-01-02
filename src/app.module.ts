@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { StudiesModule } from './studies/studies.module';
 import { UsersModule } from './users/users.module';
+import { PublicModule } from './public/public.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot({
       load: configs,
     }),
+    PublicModule,
   ],
   controllers: [AppController],
   providers: [

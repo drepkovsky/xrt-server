@@ -1,20 +1,16 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
-  Param,
-  Patch,
   Post,
   Request,
   UseGuards,
 } from '@nestjs/common';
-import _ from 'lodash';
+import _omit from 'lodash/omit';
 import { RequestWithUser } from 'src/global/types';
 import { CreateUserDto } from 'src/users/dto/users.dto';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
-import { UserParam } from './decorators/user-param.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
@@ -30,7 +26,7 @@ export class AuthController {
   async login(@Request() req: RequestWithUser) {
     return {
       ...(await this.authService.login(req.user)),
-      user: _.omit(req.user, 'password'),
+      user: _omit(req.user, 'password'),
     };
   }
 
@@ -44,13 +40,13 @@ export class AuthController {
 
     return {
       ...(await this.authService.login(user)),
-      user: _.omit(user, 'password'),
+      user: _omit(user, 'password'),
     };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('user')
   async getUser(@Request() req) {
-    return _.omit(req.user, 'password');
+    return _omit(req.user, 'password');
   }
 }
