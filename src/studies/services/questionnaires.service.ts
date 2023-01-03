@@ -12,13 +12,30 @@ export class QuestionnairesService
     id: number,
     data: UpdateQuestionnaireDto,
   ): Promise<Questionnaire> {
-    throw new Error('Method not implemented.');
+    return prisma.questionnaire.update({
+      where: { id },
+      data: {
+        questions: {
+          updateMany: data.questions.map((question) => ({
+            where: { id: Number(question.id) },
+            data: {
+              text: question.text,
+              type: question.type,
+            },
+          })),
+        },
+      },
+    });
   }
 
   updateMany(
     prisma: Prisma.TransactionClient,
     data: UpdateQuestionnaireDto[],
   ): Promise<Questionnaire[]> {
-    throw new Error('Method not implemented.');
+    return Promise.all(
+      data.map((questionnaire) =>
+        this.update(prisma, Number(questionnaire.id), questionnaire),
+      ),
+    );
   }
 }

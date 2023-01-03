@@ -41,7 +41,6 @@ export class StudiesService {
     });
   }
 
-  // TODO: implement search parameters and pagination
   async findAll(user: User) {
     return await this.prisma.study.findMany({
       where: {

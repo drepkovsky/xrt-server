@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, Task } from '@prisma/client';
+import _omit from 'lodash/omit';
 import { StudyUpdatable } from 'src/studies/abstract/study-updatable.abstract';
 import { UpdateTaskDto } from 'src/studies/dto/tasks.dto';
 
@@ -10,12 +11,19 @@ export class TasksService implements StudyUpdatable<Task, UpdateTaskDto> {
     id: number,
     data: UpdateTaskDto,
   ): Promise<Task> {
-    throw new Error('Method not implemented.');
+    return prisma.task.update({
+      where: { id },
+      data: {
+        ..._omit(data, ['id']),
+      },
+    });
   }
   updateMany(
     prisma: Prisma.TransactionClient,
     data: UpdateTaskDto[],
   ): Promise<Task[]> {
-    throw new Error('Method not implemented.');
+    return Promise.all(
+      data.map((task) => this.update(prisma, Number(task.id), task)),
+    );
   }
 }
