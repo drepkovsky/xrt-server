@@ -1,8 +1,14 @@
+import { StudyUpdatable } from '#app/studies/abstract/study-updatable.abstract';
+import { Study } from '#app/studies/entities/study.entity';
+import { QuestionnaireService } from '#app/studies/modules/questionnaire/questionnaire.service';
+import { TaskService } from '#app/studies/modules/task/task.service';
+import { User } from '#app/users/entities/user.entity';
+import { EntityManager } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 
 @Injectable()
-export class StudiesService {
+export class StudyService {
   private readonly _updatableFields = ['name', 'description'];
   private readonly _updatableRelations: Record<
     string,
@@ -10,72 +16,58 @@ export class StudiesService {
   >;
 
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly tasksService: TasksService,
-    private readonly questionnairesService: QuestionnairesService,
+    private readonly taskService: TaskService,
+    private readonly questionnaireService: QuestionnaireService,
   ) {
     this._updatableRelations = {
-      tasks: this.tasksService,
-      preStudyQuestionnaire: this.questionnairesService,
-      postStudyQuestionnaire: this.questionnairesService,
+      task: this.taskService,
+      preStudyQuestionnaire: this.questionnaireService,
+      postStudyQuestionnaire: this.questionnaireService,
     };
   }
 
-  create(user: User) {
+  create(em: EntityManager, user: User) {
     const name = 'New Study #' + nanoid(4);
 
-    return this.prisma.study.create({
-      data: {
-        name,
-        description: '',
-        createdBy: {
-          connect: { id: user.id },
-        },
+    const study = em.create(Study, {
+      name,
+      createdBy: {
+        id: user.id,
       },
     });
+
+    em.persist(study);
+
+    return study;
   }
 
-  async findAll(user: User) {
-    return await this.prisma.study.findMany({
-      where: {
+  async findAll(em: EntityManager, user: User) {
+    return await em.find(
+      Study,
+      {
         createdBy: {
           id: user.id,
         },
       },
-      orderBy: {
-        createdAt: 'desc',
+      {
+        orderBy: {
+          createdAt: 'desc',
+        },
+        populate: ['createdBy'],
       },
-      include: {
-        createdBy: true,
-      },
-    });
+    );
   }
 
-  findOne(id: number) {
-    return this.prisma.study.findUnique({
-      where: { id },
-      include: {
-        tasks: true,
-        postStudyQuestionnaire: {
-          include: {
-            questions: {
-              include: {
-                options: true,
-              },
-            },
-          },
-        },
-        preStudyQuestionnaire: {
-          include: {
-            questions: {
-              include: {
-                options: true,
-              },
-            },
-          },
-        },
+  findOne(em: EntityManager, id: number) {
+    return em.findOne(
+      Study,
+      {
+        id,
       },
-    });
+      {
+        populate: ['createdBy', 'tasks'],
+      },
+    );
   }
 
   async update(id: number, data: UpdateStudyDto) {

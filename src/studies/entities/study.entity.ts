@@ -1,8 +1,17 @@
 import { CRUDGroup } from '#app/global/common.types';
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
+import { Questionnaire } from '#app/studies/modules/questionnaire/entities/questionnaire.entity';
+import { Task } from '#app/studies/modules/task/entities/task.entity';
 import { User } from '#app/users/entities/user.entity';
-import { Entity, ManyToOne, Ref, Unique } from '@mikro-orm/core';
-import { IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator';
+import {
+  Collection,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  Ref,
+  Unique,
+} from '@mikro-orm/core';
+import { IsOptional, MaxLength, MinLength } from 'class-validator';
 import { nanoid } from 'nanoid';
 import { Property } from 'node_modules/@mikro-orm/core/decorators/Property.js';
 
@@ -21,5 +30,14 @@ export class Study extends XrBaseEntity {
   token = nanoid();
 
   @ManyToOne(() => User)
-  user!: Ref<User>;
+  createdBy!: Ref<User>;
+
+  @OneToMany(() => Task, 'study')
+  tasks: Collection<Task> = new Collection<Task>(this);
+
+  @ManyToOne(() => Questionnaire)
+  preStudyQuestionnaire!: Ref<Questionnaire>;
+
+  @ManyToOne(() => Questionnaire)
+  poStudyQuestionnaire!: Ref<Questionnaire>;
 }
