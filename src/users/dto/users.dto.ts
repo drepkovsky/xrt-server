@@ -1,10 +1,23 @@
-import { createZodDto } from 'nestjs-zod';
-import { z } from 'nestjs-zod/z';
+import { CRUDGroup } from '#app/global/common.types';
+import { ValidationGroup } from '#app/global/decorators/validation-group.decorator';
+import { User } from '#app/users/entities/user.entity';
+import { IntersectionType, PickType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/mapped-types/dist/partial-type.helper.js';
 
-export const createUserSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-  name: z.string().min(1).optional(),
-});
+@ValidationGroup(CRUDGroup.CREATE)
+export class CreateUserDto extends PickType(User, [
+  'name',
+  'email',
+  'password',
+]) {}
 
-export class CreateUserDto extends createZodDto(createUserSchema) {}
+@ValidationGroup(CRUDGroup.UPDATE)
+export class UpdateUserDto extends IntersectionType(
+  PartialType(CreateUserDto),
+  PickType(User, ['id']),
+) {}
+
+@ValidationGroup(CRUDGroup.FIND)
+export class FindUserDto extends PartialType(
+  PickType(User, ['name', 'email', 'id']),
+) {}

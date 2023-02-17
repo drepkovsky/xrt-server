@@ -1,38 +1,30 @@
+import { CreateUserDto, FindUserDto } from '#app/users/dto/users.dto';
+import { User } from '#app/users/entities/user.entity';
+import { EntityManager } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
 import bcrypt from 'bcrypt';
-
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
-
-  create(createUserInput: Prisma.UserCreateInput) {
-    return this.prisma.user.create({
-      data: {
-        ...createUserInput,
-        password: this._hashPassword(createUserInput.password),
-      },
+  create(em: EntityManager, dto: CreateUserDto) {
+    const user = em.create(User, {
+      ...dto,
+      password: this._hashPassword(dto.password),
     });
+
+    return em.persist(user);
   }
 
-  findOne(id: number) {
-    return this.prisma.user.findUnique({
-      where: { id },
-    });
+  findOne(em: EntityManager, dto: FindUserDto) {
+    return em.findOne(User, dto);
   }
 
-  validateUser(email: string, password: string) {
-    return this.prisma.user
-      .findUnique({
-        where: { email },
-      })
-      .then((user) => {
-        if (user && this._validatePassword(password, user.password)) {
-          return user;
-        }
-        return null;
-      });
+  validateUser(em: EntityManager, email: string, password: string) {
+    return this.findOne(em, { email }).then((user) => {
+      if (user && this._validatePassword(password, user.password)) {
+        return user;
+      }
+      return null;
+    });
   }
 
   private _hashPassword(password: string) {

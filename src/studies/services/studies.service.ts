@@ -1,11 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
 import { nanoid } from 'nanoid';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { StudyUpdatable } from 'src/studies/abstract/study-updatable.abstract';
-import { UpdateStudyDto } from 'src/studies/dto/study.dto';
-import { QuestionnairesService } from 'src/studies/services/questionnaires.service';
-import { TasksService } from 'src/studies/services/tasks.service';
 
 @Injectable()
 export class StudiesService {

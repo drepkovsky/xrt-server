@@ -1,15 +1,15 @@
+import { UserParam } from '#app/auth/decorators/user-param.decorator';
+import { JwtAuthGuard } from '#app/auth/guards/jwt-auth.guard';
+import { StudiesService } from '#app/studies/services/studies.service';
+import { User } from '#app/users/entities/user.entity';
 import { Controller, UseGuards } from '@nestjs/common';
-import { User } from '@prisma/client';
-import { UserParam } from 'src/auth/decorators/user-param.decorator';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { StudiesService } from 'src/studies/services/studies.service';
 
 @Controller('studies')
 @UseGuards(JwtAuthGuard)
 export class StudiesController {
   constructor(private readonly studyService: StudiesService) {}
 
-  // creates empty study
+  // creates empty study as draft
   create(@UserParam() user: User) {
     return this.studyService.create(user);
   }

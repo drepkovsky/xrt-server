@@ -2,11 +2,10 @@
 https://docs.nestjs.com/providers#services
 */
 
+import { JwtPayload } from '#app/auth/types';
+import { UsersService } from '#app/users/users.service';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
-import { UsersService } from '../users/users.service';
-import type { JwtPayload } from './types';
 
 @Injectable()
 export class AuthService {

@@ -1,18 +1,14 @@
+import { configs } from '#app/config/main';
+import { XrValidationPipe } from '#app/global/pipe/xr-validation.pipe';
+import { PublicModule } from '#app/public/public.module';
+import { StudiesModule } from '#app/studies/studies.module';
+import { UsersModule } from '#app/users/users.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
-import { ZodValidationPipe } from 'nestjs-zod';
-import { configs } from 'src/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { PrismaModule } from './prisma/prisma.module';
-import { StudiesModule } from './studies/studies.module';
-import { UsersModule } from './users/users.module';
-import { PublicModule } from './public/public.module';
 
 @Module({
   imports: [
-    PrismaModule,
     StudiesModule,
     UsersModule,
     ConfigModule.forRoot({
@@ -20,12 +16,10 @@ import { PublicModule } from './public/public.module';
     }),
     PublicModule,
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
     {
       provide: APP_PIPE,
-      useClass: ZodValidationPipe,
+      useClass: XrValidationPipe,
     },
   ],
 })
