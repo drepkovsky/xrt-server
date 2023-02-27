@@ -5,7 +5,7 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class TaskService implements StudyUpdatable<Task, UpdateTaskDto> {
+export class TaskService {
   update(em: EntityManager, dto: UpdateTaskDto): Promise<Task> {
     return em.upsert(Task, {
       ...dto,

@@ -1,116 +1,147 @@
-import { StudyUpdatable } from '#app/studies/abstract/study-updatable.abstract';
+import { CRUDService } from '#app/global/crud-service';
+import { UpdateStudyDto } from '#app/studies/dto/study.dto';
 import { Study } from '#app/studies/entities/study.entity';
-import { QuestionnaireService } from '#app/studies/modules/questionnaire/questionnaire.service';
-import { TaskService } from '#app/studies/modules/task/task.service';
 import { User } from '#app/users/entities/user.entity';
-import { EntityManager } from '@mikro-orm/postgresql';
+import {
+  Connection,
+  EntityData,
+  EntityManager,
+  FindOptions,
+  IDatabaseDriver,
+  ObjectQuery,
+  RequiredEntityData,
+} from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
-import { nanoid } from 'nanoid';
 
 @Injectable()
-export class StudyService {
-  private readonly _updatableFields = ['name', 'description'];
-  private readonly _updatableRelations: Record<
-    string,
-    StudyUpdatable<any, any>
-  >;
+export class StudyService extends CRUDService<Study, {}, UpdateStudyDto, {}> {
+  protected updatableFields = this._buildFields(['name']);
+  protected findOneRelations = ['tasks'];
+  protected findManyRelations = this._buildFields(['createdBy']);
+  protected updateRelations = this.findOneRelations;
+  protected removeRelations = this.findOneRelations;
 
-  constructor(
-    private readonly taskService: TaskService,
-    private readonly questionnaireService: QuestionnaireService,
-  ) {
-    this._updatableRelations = {
-      task: this.taskService,
-      preStudyQuestionnaire: this.questionnaireService,
-      postStudyQuestionnaire: this.questionnaireService,
-    };
+  constructor() {
+    super(Study);
   }
 
-  create(em: EntityManager, user: User) {
-    const name = 'New Study #' + nanoid(4);
-
-    const study = em.create(Study, {
-      name,
+  protected async resolveCreatePayload(
+    _: {},
+    user: User,
+  ): Promise<RequiredEntityData<Study>> {
+    return {
       createdBy: {
         id: user.id,
       },
-    });
-
-    em.persist(study);
-
-    return study;
+    };
   }
 
-  async findAll(em: EntityManager, user: User) {
-    return await em.find(
-      Study,
-      {
-        createdBy: {
-          id: user.id,
-        },
+  protected resolveFindManyQuery(findDto: {}): ObjectQuery<Study> {
+    return {};
+  }
+  protected resolveUserQuery(user: User): ObjectQuery<Study> {
+    return {};
+  }
+  protected resolveFindOptions(findDto: {}): FindOptions<Study, never> {
+    return {
+      orderBy: {
+        createdAt: 'DESC',
       },
-      {
-        orderBy: {
-          createdAt: 'desc',
-        },
-        populate: ['createdBy'],
-      },
-    );
+    };
+  }
+  protected resolveUpdatePayload(
+    data: UpdateStudyDto,
+    user: User,
+  ): Promise<EntityData<Study>> {
+    throw new Error('Method not implemented.');
   }
 
-  findOne(em: EntityManager, id: number) {
-    return em.findOne(
-      Study,
-      {
-        id,
-      },
-      {
-        populate: ['createdBy', 'tasks'],
-      },
-    );
+  protected handleRelationRemoval<E>(
+    em: EntityManager<IDatabaseDriver<Connection>>,
+    entity: E,
+    shouldSoftRemove: boolean,
+  ): Promise<void> {
+    throw new Error('Method not implemented.');
   }
 
-  async update(id: number, data: UpdateStudyDto) {
-    this.prisma.$transaction(async (trx) => {
-      const study = await this.findOne(id);
+  // create(em: EntityManager, user: User) {
+  //   const name = 'New Study #' + nanoid(4);
 
-      const payload: Prisma.StudyUpdateInput = {};
-      for (const field of this._updatableFields) {
-        if (data[field]) {
-          payload[field] = data[field];
-        }
-      }
+  //   const study = em.create(Study, {
+  //     name,
+  //     createdBy: {
+  //       id: user.id,
+  //     },
+  //   });
 
-      for (const field of Object.keys(this._updatableRelations)) {
-        if (data[field]) {
-          if (!this._updatableRelations[field]) {
-            throw new Error(`Relation ${field} is not updatable`);
-          }
+  //   em.persist(study);
 
-          const value = data[field];
+  //   return study;
+  // }
 
-          if (Array.isArray(value)) {
-            await this._updatableRelations[field].updateMany(trx, data[field]);
-          } else {
-            await this._updatableRelations[field].update(
-              trx,
-              study.id,
-              data[field],
-            );
-          }
-        }
-      }
+  // async findAll(em: EntityManager, user: User) {
+  //   return await em.find(
+  //     Study,
+  //     {
+  //       createdBy: {
+  //         id: user.id,
+  //       },
+  //     },
+  //     {
+  //       orderBy: {
+  //         createdAt: 'desc',
+  //       },
+  //       populate: ['createdBy'],
+  //     },
+  //   );
+  // }
 
-      return this.prisma.study.update({
-        where: { id },
-        data: payload,
-      });
-    });
-  }
+  // findOne(em: EntityManager, id: string) {
+  //   return em.findOne(
+  //     Study,
+  //     { id },
+  //     {
+  //       populate: [
+  //         'createdBy',
+  //         'tasks',
+  //         'preStudyQuestionnaire',
+  //         'postStudyQuestionnaire',
+  //       ],
+  //     },
+  //   );
+  // }
 
-  remove(id: number) {
-    return this.prisma.study.delete({
-      where: { id },
-    });
-  }
+  // async update(em: EntityManager, id: string, data: UpdateStudyDto) {
+  //   const study = await this.findOne(em, id);
+
+  //   const payload: Partial<Study> = {};
+  //   for (const field of this._updatableFields) {
+  //     if (data[field]) {
+  //       payload[field] = data[field];
+  //     }
+  //   }
+
+  //   return em.persist({
+  //     ...study,
+  //     ...payload,
+  //   });
+  // }
+
+  // async remove(em: EntityManager, id: string) {
+  //   const study = await this.findOne(em, id);
+  //   study.softRemove();
+
+  //   for (const task of study.tasks.$.getItems()) {
+  //     task.softRemove();
+  //   }
+
+  //   for (const questionnaire of [
+  //     study.preStudyQuestionnaire.$,
+  //     study.postStudyQuestionnaire.$,
+  //   ]) {
+  //     questionnaire.softRemove();
+  //   }
+
+  //   return em.persist(study);
+  // }
 }

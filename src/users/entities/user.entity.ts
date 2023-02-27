@@ -4,7 +4,7 @@ import { Entity, Property } from '@mikro-orm/core';
 import { IsEmail, IsOptional, MaxLength, MinLength } from 'class-validator';
 
 @Entity()
-export class User extends XrBaseEntity {
+export class User extends XrBaseEntity<User> {
   @Property()
   @MaxLength(255)
   @MinLength(3)

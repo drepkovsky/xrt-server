@@ -1,6 +1,6 @@
 import { UserParam } from '#app/auth/decorators/user-param.decorator';
 import { JwtAuthGuard } from '#app/auth/guards/jwt-auth.guard';
-import { StudyService } from '#app/studies/study.service';
+import { StudyService } from '#app/studies/StudyService';
 import { User } from '#app/users/entities/user.entity';
 import { MikroORM } from '@mikro-orm/postgresql';
 import { Controller, UseGuards } from '@nestjs/common';

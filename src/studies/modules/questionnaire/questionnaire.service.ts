@@ -1,13 +1,10 @@
-import { StudyUpdatable } from '#app/studies/abstract/study-updatable.abstract';
 import { UpdateQuestionnaireDto } from '#app/studies/modules/questionnaire/dto/questionnaire.dto';
 import { Questionnaire } from '#app/studies/modules/questionnaire/entities/questionnaire.entity';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class QuestionnaireService
-  implements StudyUpdatable<Questionnaire, UpdateQuestionnaireDto>
-{
+export class QuestionnaireService {
   async update(
     em: EntityManager,
     dto: UpdateQuestionnaireDto,
@@ -31,15 +28,9 @@ export class QuestionnaireService
     em: EntityManager,
     dtos: UpdateQuestionnaireDto[],
   ): Promise<Questionnaire[]> {
-    const questionnaires = await em.find(
-      Questionnaire,
-      {
-        id: dtos.map((d) => d.id),
-      },
-      {
-        populate: ['questions'],
-      },
-    );
+    const questionnaires = await em.find(Questionnaire, {
+      id: dtos.map((d) => d.id),
+    });
 
     dtos.forEach((dto) => {
       const q = questionnaires.find((q) => q.id === dto.id);

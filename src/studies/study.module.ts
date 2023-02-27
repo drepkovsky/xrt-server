@@ -1,5 +1,5 @@
 import { StudyController } from '#app/studies/study.controller';
-import { StudyService } from '#app/studies/study.service';
+import { StudyService } from '#app/studies/StudyService';
 import { Module } from '@nestjs/common';
 
 @Module({

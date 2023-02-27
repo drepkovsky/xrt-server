@@ -4,7 +4,7 @@ import { TaskResponse } from '#app/studies/modules/task/entities/task-response.e
 import { Collection, Entity, ManyToOne, OneToMany, Ref } from '@mikro-orm/core';
 
 @Entity()
-export class Respondent extends XrBaseEntity {
+export class Respondent extends XrBaseEntity<Respondent> {
   @ManyToOne(() => Study)
   study!: Ref<Study>;
 

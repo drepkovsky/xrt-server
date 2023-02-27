@@ -6,7 +6,10 @@ import { IsOptional, IsNotEmpty } from 'class-validator';
 
 @WithSoftDelete()
 @Entity({ abstract: true })
-export class XrBaseEntity extends BaseEntity<XrBaseEntity, 'id'> {
+export class XrBaseEntity<E extends { id: string }> extends BaseEntity<
+  E,
+  'id'
+> {
   @PrimaryKey({ autoincrement: true, type: 'bigint' })
   @IsOptional({ groups: [CRUDGroup.FIND] })
   @IsNotEmpty({ groups: [CRUDGroup.UPDATE] })

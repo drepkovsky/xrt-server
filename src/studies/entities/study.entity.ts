@@ -16,12 +16,12 @@ import { nanoid } from 'nanoid';
 import { Property } from 'node_modules/@mikro-orm/core/decorators/Property.js';
 
 @Entity()
-export class Study extends XrBaseEntity {
+export class Study extends XrBaseEntity<Study> {
   @Property()
   @MaxLength(255)
   @MinLength(3)
   @IsOptional({ groups: [CRUDGroup.UPDATE, CRUDGroup.FIND, CRUDGroup.CREATE] })
-  name!: string;
+  name: string = `New Study #${nanoid(4)}`;
 
   @Unique({
     options: { partialFilterExpression: { deletedAt: { $exists: false } } },
@@ -39,5 +39,5 @@ export class Study extends XrBaseEntity {
   preStudyQuestionnaire!: Ref<Questionnaire>;
 
   @ManyToOne(() => Questionnaire)
-  poStudyQuestionnaire!: Ref<Questionnaire>;
+  postStudyQuestionnaire!: Ref<Questionnaire>;
 }
