@@ -22,6 +22,7 @@ export class Task extends XrBaseEntity<Task> {
 
   @MaxLength(500)
   @MinLength(1)
+  @IsOptional({ groups: [CRUDGroup.UPDATE] })
   text!: string;
 
   @ManyToOne(() => Study)

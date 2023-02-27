@@ -1,4 +1,13 @@
+import { CRUDGroup } from '#app/global/common.types';
+import { ValidationGroup } from '#app/global/decorators/validation-group.decorator';
 import { Study } from '#app/studies/entities/study.entity';
 import { PickType } from '@nestjs/mapped-types';
 
-export class UpdateStudyDto extends PickType(Study, ['name', 'id']) {}
+@ValidationGroup(CRUDGroup.UPDATE)
+export class UpdateStudyDto extends PickType(Study, [
+  'name',
+  'id',
+  'preStudyQuestionnaire',
+  'postStudyQuestionnaire',
+  'tasks',
+]) {}

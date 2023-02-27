@@ -1,5 +1,6 @@
 import { CRUDGroup } from '#app/global/common.types';
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
+import { UpdateQuestionnaireDto } from '#app/studies/modules/questionnaire/dto/questionnaire.dto';
 import { Questionnaire } from '#app/studies/modules/questionnaire/entities/questionnaire.entity';
 import { Task } from '#app/studies/modules/task/entities/task.entity';
 import { User } from '#app/users/entities/user.entity';
@@ -11,7 +12,13 @@ import {
   Ref,
   Unique,
 } from '@mikro-orm/core';
-import { IsOptional, MaxLength, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsOptional,
+  MaxLength,
+  MinLength,
+  ValidateNested,
+} from 'class-validator';
 import { nanoid } from 'nanoid';
 import { Property } from 'node_modules/@mikro-orm/core/decorators/Property.js';
 
@@ -36,8 +43,10 @@ export class Study extends XrBaseEntity<Study> {
   tasks: Collection<Task> = new Collection<Task>(this);
 
   @ManyToOne(() => Questionnaire)
+  @ValidateNested({ groups: [CRUDGroup.UPDATE] })
   preStudyQuestionnaire!: Ref<Questionnaire>;
 
   @ManyToOne(() => Questionnaire)
+  @ValidateNested({ groups: [CRUDGroup.UPDATE] })
   postStudyQuestionnaire!: Ref<Questionnaire>;
 }

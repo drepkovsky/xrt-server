@@ -18,3 +18,9 @@ export enum CRUDGroup {
   FIND = 'find',
   DELETE = 'delete',
 }
+
+export enum UpdateOperation {
+  ADD = 'add',
+  REMOVE = 'remove',
+  REPLACE = 'replace',
+}

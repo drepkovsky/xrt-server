@@ -53,7 +53,7 @@ export class StudyService extends CRUDService<Study, {}, UpdateStudyDto, {}> {
     data: UpdateStudyDto,
     user: User,
   ): Promise<EntityData<Study>> {
-    throw new Error('Method not implemented.');
+    return Promise.resolve(data);
   }
 
   protected handleRelationRemoval<E>(
