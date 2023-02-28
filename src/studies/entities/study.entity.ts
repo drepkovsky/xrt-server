@@ -1,6 +1,5 @@
 import { CRUDGroup } from '#app/global/common.types';
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
-import { UpdateQuestionnaireDto } from '#app/studies/modules/questionnaire/dto/questionnaire.dto';
 import { Questionnaire } from '#app/studies/modules/questionnaire/entities/questionnaire.entity';
 import { Task } from '#app/studies/modules/task/entities/task.entity';
 import { User } from '#app/users/entities/user.entity';
