@@ -8,8 +8,8 @@ dotenv.config();
 const config: Options = {
   type: 'postgresql',
   clientUrl: process.env.DATABASE_URL,
-  entities: ['dist/**/*.entity.js', 'dist/db/generated-entities/*.js'],
-  entitiesTs: ['src/**/*.entity.ts', 'src/db/generated-entities/*.ts'],
+  entities: ['dist/**/*.entity.js'],
+  entitiesTs: ['src/**/*.entity.ts'],
   ensureDatabase: true,
   migrations: {
     path: 'dist/db/migrations',

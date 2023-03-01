@@ -1,15 +1,21 @@
 import { UpdateStudyDto } from '#app/studies/dto/study.dto';
 import { Study } from '#app/studies/entities/study.entity';
 import { User } from '#app/users/entities/user.entity';
-import { EntityManager } from '@mikro-orm/core';
-import { Injectable } from '@nestjs/common';
+import { EntityManager, Loaded, Populate } from '@mikro-orm/core';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 
 @Injectable()
 export class StudyService {
   private updatableFields = ['name'];
+  private findOnePopulate = [
+    'createdBy',
+    'tasks',
+    'postStudyQuestionnaire',
+  ] as const;
+  private findManyPopulate = ['createdBy'] as const;
 
-  async create(em: EntityManager, user: User) {
+  async create(em: EntityManager, user: User): Promise<Study> {
     const name = 'New Study #' + nanoid(4);
     const study = em.create(Study, {
       name,
@@ -20,8 +26,12 @@ export class StudyService {
     await em.persistAndFlush(study);
     return study;
   }
-  async findAll(em: EntityManager, user: User) {
-    return await em.find(
+  findAll<R extends string = (typeof this.findManyPopulate)[number]>(
+    em: EntityManager,
+    user: User,
+    populate: Populate<Study, R> = this.findManyPopulate as any,
+  ): Promise<Loaded<Study, R>[]> {
+    return em.find(
       Study,
       {
         createdBy: {
@@ -32,30 +42,41 @@ export class StudyService {
         orderBy: {
           createdAt: 'desc',
         },
-        populate: ['createdBy'],
+        populate: populate,
       },
     );
   }
-  findOne(em: EntityManager, id: string) {
-    return em.findOne(
+  async findOne<R extends string = (typeof this.findOnePopulate)[number]>(
+    em: EntityManager,
+    id: string,
+    user: User,
+    populate: Populate<Study, R> = this.findOnePopulate as any,
+  ): Promise<Loaded<Study, R>> {
+    const result = await em.findOne(
       Study,
-      { id },
       {
-        populate: [
-          'createdBy',
-          'tasks',
-          'preStudyQuestionnaire',
-          'postStudyQuestionnaire',
-        ],
+        id,
+        createdBy: {
+          id: user.id,
+        },
+      },
+      {
+        populate,
       },
     );
+
+    if (!result) {
+      throw new NotFoundException(`Study with id ${id} not found`);
+    }
+
+    return result;
   }
-  async update(em: EntityManager, id: string, data: UpdateStudyDto) {
-    const study = await this.findOne(em, id);
+  async update(em: EntityManager, dto: UpdateStudyDto, user: User) {
+    const study = await this.findOne(em, dto.id, user);
     const payload: Partial<Study> = {};
     for (const field of this.updatableFields) {
-      if (data[field]) {
-        payload[field] = data[field];
+      if (dto[field]) {
+        payload[field] = dto[field];
       }
     }
     return em.persist({
@@ -63,10 +84,14 @@ export class StudyService {
       ...payload,
     });
   }
-  async remove(em: EntityManager, id: string) {
-    const study = await this.findOne(em, id);
+  async remove(em: EntityManager, id: string, user: User) {
+    const study = await this.findOne(em, id, user, [
+      'tasks',
+      'preStudyQuestionnaire',
+      'postStudyQuestionnaire',
+    ]);
     study.softRemove();
-    for (const task of study.tasks.$.getItems()) {
+    for (const task of study.tasks.$) {
       task.softRemove();
     }
     for (const questionnaire of [
@@ -76,6 +101,7 @@ export class StudyService {
       questionnaire.softRemove();
     }
 
-    return em.persist(study);
+    await em.persistAndFlush(study);
+    return study;
   }
 }

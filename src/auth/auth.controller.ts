@@ -1,3 +1,12 @@
+import { AuthService } from '#app/auth/auth.service';
+import { UserParam } from '#app/auth/decorators/user-param.decorator';
+import { JwtAuthGuard } from '#app/auth/guards/jwt-auth.guard';
+import { LocalAuthGuard } from '#app/auth/guards/local-auth.guard';
+import { RequestWithUser } from '#app/global/types/common.types';
+import { CreateUserDto } from '#app/users/dto/users.dto';
+import { User } from '#app/users/entities/user.entity';
+import { UsersService } from '#app/users/users.service';
+import { MikroORM } from '@mikro-orm/core';
 import {
   Body,
   Controller,
@@ -6,19 +15,13 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import _omit from 'lodash/omit';
-import { RequestWithUser } from 'src/global/types';
-import { CreateUserDto } from 'src/users/dto/users.dto';
-import { UsersService } from '../users/users.service';
-import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private userService: UsersService,
+    private readonly orm: MikroORM,
   ) {}
 
   @UseGuards(LocalAuthGuard)
@@ -26,27 +29,29 @@ export class AuthController {
   async login(@Request() req: RequestWithUser) {
     return {
       ...(await this.authService.login(req.user)),
-      user: _omit(req.user, 'password'),
+      user: req.user,
     };
   }
 
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
-    const user = await this.userService.create({
-      email: createUserDto.email,
-      password: createUserDto.password,
-      name: createUserDto.name,
-    });
+    return this.orm.em.transactional(async (em) => {
+      const user = await this.userService.create(em, {
+        email: createUserDto.email,
+        password: createUserDto.password,
+        name: createUserDto.name,
+      });
 
-    return {
-      ...(await this.authService.login(user)),
-      user: _omit(user, 'password'),
-    };
+      return {
+        ...(await this.authService.login(user)),
+        user: user,
+      };
+    });
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('user')
-  async getUser(@Request() req) {
-    return _omit(req.user, 'password');
+  @Get('me')
+  async getUser(@UserParam() user: User) {
+    return user;
   }
 }

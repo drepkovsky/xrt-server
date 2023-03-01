@@ -1,4 +1,4 @@
-import { CRUDGroup } from '#app/global/common.types';
+import { CRUDGroup } from '#app/global/types/common.types';
 import { ValidationGroup } from '#app/global/decorators/validation-group.decorator';
 import { User } from '#app/users/entities/user.entity';
 import { IntersectionType, PickType } from '@nestjs/mapped-types';

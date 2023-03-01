@@ -1,4 +1,4 @@
-import { CRUDGroup } from '#app/global/common.types';
+import { CRUDGroup } from '#app/global/types/common.types';
 import { ValidationGroup } from '#app/global/decorators/validation-group.decorator';
 import { UpdateQuestionDto } from '#app/studies/modules/questionnaire/dto/question.dto';
 import { Questionnaire } from '#app/studies/modules/questionnaire/entities/questionnaire.entity';

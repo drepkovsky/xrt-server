@@ -1,4 +1,4 @@
-import { CRUDGroup } from '#app/global/common.types';
+import { CRUDGroup } from '#app/global/types/common\.types';
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
 import { Entity, Property } from '@mikro-orm/core';
 import { IsEmail, IsOptional, MaxLength, MinLength } from 'class-validator';

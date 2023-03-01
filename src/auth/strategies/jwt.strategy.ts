@@ -1,19 +1,24 @@
+import { JwtPayload } from '#app/auth/types';
+import { ConfigKey } from '#app/config/config.types';
+import { JwtConfig } from '#app/config/jwt.config';
+import { User } from '#app/users/entities/user.entity';
+import { UsersService } from '#app/users/users.service';
+import { MikroORM } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { User } from '@prisma/client';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import type { JwtConfig } from 'src/config/jwt.config';
-import { JWT_CONFIG_KEY } from 'src/config/jwt.config';
-import { UsersService } from 'src/users/users.service';
-import type { JwtPayload } from '../types';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(configService: ConfigService, private userService: UsersService) {
+  constructor(
+    configService: ConfigService,
+    private userService: UsersService,
+    private readonly orm: MikroORM,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<JwtConfig>(JWT_CONFIG_KEY).secret,
+      secretOrKey: configService.get<JwtConfig>(ConfigKey.JWT).secret,
     });
   }
 
@@ -22,6 +27,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
    * the payload from and already validated JWT
    */
   async validate(payload: JwtPayload): Promise<User> {
-    return this.userService.findOne(payload.sub);
+    return this.userService.findOne(this.orm.em, { id: payload.sub });
   }
 }

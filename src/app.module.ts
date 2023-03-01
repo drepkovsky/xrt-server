@@ -1,19 +1,31 @@
+import { AuthModule } from '#app/auth/auth.module';
+import { ConfigKey } from '#app/config/config.types';
 import { configs } from '#app/config/main';
+import { OrmConfig } from '#app/config/orm.config';
 import { XrValidationPipe } from '#app/global/pipe/xr-validation.pipe';
 import { PublicModule } from '#app/public/public.module';
 import { StudyModule } from '#app/studies/study.module';
 import { UsersModule } from '#app/users/users.module';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
 
 @Module({
   imports: [
-    StudyModule,
-    UsersModule,
     ConfigModule.forRoot({
       load: configs,
     }),
+    MikroOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        ...configService.get<OrmConfig>(ConfigKey.ORM),
+      }),
+    }),
+    AuthModule,
+    StudyModule,
+    UsersModule,
     PublicModule,
   ],
   providers: [

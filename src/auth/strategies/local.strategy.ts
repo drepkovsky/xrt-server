@@ -1,16 +1,20 @@
+import { User } from '#app/users/entities/user.entity';
+import { UsersService } from '#app/users/users.service';
+import { MikroORM } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { User } from '@prisma/client';
 import { Strategy } from 'passport-local';
-import { AuthService } from '../auth.service';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private authService: AuthService) {
+  constructor(
+    private userService: UsersService,
+    private readonly orm: MikroORM,
+  ) {
     super({ usernameField: 'email' });
   }
 
   async validate(email: string, password: string): Promise<User> {
-    return this.authService.validateUser(email, password);
+    return this.userService.validateUser(this.orm.em, email, password);
   }
 }

@@ -5,13 +5,14 @@ import { Injectable } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
-  create(em: EntityManager, dto: CreateUserDto) {
+  async create(em: EntityManager, dto: CreateUserDto) {
     const user = em.create(User, {
       ...dto,
       password: this._hashPassword(dto.password),
     });
 
-    return em.persist(user);
+    await em.persistAndFlush(user);
+    return user;
   }
 
   findOne(em: EntityManager, dto: FindUserDto) {

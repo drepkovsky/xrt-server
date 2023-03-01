@@ -1,50 +1,53 @@
 import { UserParam } from '#app/auth/decorators/user-param.decorator';
-import { JwtAuthGuard } from '#app/auth/guards/jwt-auth.guard';
+import { JwtAuthIoGuard } from '#app/auth/guards/jwt-auth.ioguard';
+import { IoGateway } from '#app/global/decorators/io-gateway.decorator';
+import { UseIoGuard } from '#app/global/decorators/use-io-guard.decorator';
+import { IoBaseGateway } from '#app/global/gateway/io-base.gateway';
 import { UpdateStudyDto } from '#app/studies/dto/study.dto';
 import { StudyService } from '#app/studies/study.service';
 import { User } from '#app/users/entities/user.entity';
-import { MikroORM } from '@mikro-orm/core';
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { Body, Delete, Param, Patch } from '@nestjs/common/decorators/index.js';
+import { Param } from '@nestjs/common';
+import { MessageBody, SubscribeMessage } from '@nestjs/websockets';
 
-@UseGuards(JwtAuthGuard, JwtAuthGuard)
-@Controller('studies')
-export class StudyController {
-  constructor(
-    private readonly orm: MikroORM,
-    private readonly studyService: StudyService,
-  ) {}
+@UseIoGuard(JwtAuthIoGuard)
+@IoGateway({
+  namespace: 'studies',
+})
+export class StudyGateway extends IoBaseGateway {
+  constructor(private readonly studyService: StudyService) {
+    super();
+  }
 
-  @Post('')
+  @SubscribeMessage('create')
   async create(@UserParam() user: User) {
     return this.orm.em.transactional(async (em) => {
       return this.studyService.create(em, user);
     });
   }
 
-  @Get('')
+  @SubscribeMessage('findAll')
   async findAll(@UserParam() user: User) {
     return this.orm.em.transactional(async (em) => {
       return this.studyService.findAll(em, user);
     });
   }
 
-  @Get(':id')
+  @SubscribeMessage('findOne')
   async findOne(@UserParam() user: User, @Param('id') id: string) {
     return this.orm.em.transactional(async (em) => {
       return this.studyService.findOne(em, id, user);
     });
   }
 
-  @Patch('')
-  async update(@UserParam() user: User, @Body() dto: UpdateStudyDto) {
+  @SubscribeMessage('update')
+  async update(@MessageBody() dto: UpdateStudyDto, @UserParam() user: User) {
     return this.orm.em.transactional(async (em) => {
       return this.studyService.update(em, dto, user);
     });
   }
 
-  @Delete(':id')
-  async remove(@UserParam() user: User, @Param('id') id: string) {
+  @SubscribeMessage('remove')
+  async remove(@UserParam() user: User, @MessageBody('id') id: string) {
     return this.orm.em.transactional(async (em) => {
       return this.studyService.remove(em, id, user);
     });

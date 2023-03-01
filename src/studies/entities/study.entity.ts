@@ -1,4 +1,4 @@
-import { CRUDGroup } from '#app/global/common.types';
+import { CRUDGroup } from '#app/global/types/common.types';
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
 import { Questionnaire } from '#app/studies/modules/questionnaire/entities/questionnaire.entity';
 import { Task } from '#app/studies/modules/task/entities/task.entity';

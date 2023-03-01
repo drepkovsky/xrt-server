@@ -1,4 +1,4 @@
-import { CRUDGroup } from '#app/global/common.types';
+import { CRUDGroup } from '#app/global/types/common.types';
 import { DateProperty } from '#app/global/decorators/date-property.decorator';
 import WithSoftDelete from '#app/global/filters/with-soft-delete.filter';
 import { BaseEntity, Entity, PrimaryKey } from '@mikro-orm/core';
