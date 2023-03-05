@@ -21,6 +21,13 @@ import {
 import { nanoid } from 'nanoid';
 import { Property } from 'node_modules/@mikro-orm/core/decorators/Property.js';
 
+export enum StudyStatus {
+  DRAFT = 'draft',
+  ACTIVE = 'active',
+  FINISHED = 'finished',
+}
+
+
 @Entity()
 export class Study extends XrBaseEntity<Study> {
   @Property()
@@ -35,7 +42,10 @@ export class Study extends XrBaseEntity<Study> {
   @Property()
   token = nanoid();
 
-  @ManyToOne(() => User)
+  @Property({type:'enum'})
+  status: StudyStatus = StudyStatus.DRAFT;
+
+  @ManyToOne(() => User,{serializer: (u: User) => u?.name})
   createdBy!: Ref<User>;
 
   @OneToMany(() => Task, 'study')

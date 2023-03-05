@@ -1,4 +1,4 @@
-import { JwtPayload } from '#app/auth/types';
+import { JwtPayload } from '#app/auth/auth.types';
 import { ConfigKey } from '#app/config/config.types';
 import { JwtConfig } from '#app/config/jwt.config';
 import { User } from '#app/users/entities/user.entity';

@@ -7,7 +7,7 @@ import { IsOptional, MaxLength, MinLength } from 'class-validator';
 
 @Entity()
 export class Answer extends XrBaseEntity<Answer> {
-  @ManyToOne(() => Question)
+  @ManyToOne(() => Question, {serializer: (q) => q.id})
   question!: Ref<Question>;
 
   @MinLength(1)
