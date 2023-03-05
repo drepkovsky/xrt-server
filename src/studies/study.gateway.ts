@@ -12,6 +12,7 @@ import { MessageBody, SubscribeMessage } from '@nestjs/websockets';
 @UseIoGuard(JwtAuthIoGuard)
 @IoGateway({
   namespace: 'studies',
+  transports: ['websocket'],
 })
 export class StudyGateway extends IoBaseGateway {
   constructor(private readonly studyService: StudyService) {

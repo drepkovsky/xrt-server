@@ -14,12 +14,13 @@ import { IsOptional, MaxLength, MinLength } from 'class-validator';
 
 @Entity()
 export class Task extends XrBaseEntity<Task> {
+  @Property()
   @MaxLength(255)
   @MinLength(2)
   @IsOptional({ groups: [CRUDGroup.UPDATE] })
-  @Property()
   name!: string;
 
+  @Property()
   @MaxLength(500)
   @MinLength(1)
   @IsOptional({ groups: [CRUDGroup.UPDATE] })

@@ -10,6 +10,7 @@ import {
   OneToMany,
   Ref,
   Enum,
+  Property,
 } from '@mikro-orm/core';
 import { IsOptional, MaxLength, MinLength } from 'class-validator';
 
@@ -27,6 +28,7 @@ export class Question extends XrBaseEntity<Question> {
   @MinLength(3)
   @MaxLength(500)
   @IsOptional({ groups: [CRUDGroup.UPDATE] })
+  @Property()
   text!: string;
 
   @ManyToOne(() => Questionnaire)

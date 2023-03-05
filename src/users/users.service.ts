@@ -1,3 +1,4 @@
+import { ValidationException } from '#app/global/exceptions/validation.exception';
 import { CreateUserDto, FindUserDto } from '#app/users/dto/users.dto';
 import { User } from '#app/users/entities/user.entity';
 import { EntityManager } from '@mikro-orm/core';
@@ -6,13 +7,23 @@ import bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
   async create(em: EntityManager, dto: CreateUserDto) {
+    const existingUser = await this.findOne(em, { email: dto.email });
+
+    if (existingUser) {
+      throw new ValidationException([
+        {
+          field: 'email',
+          messages: ['Email already exists'],
+        },
+      ]);
+    }
+
     const user = em.create(User, {
       ...dto,
       password: this._hashPassword(dto.password),
     });
 
-    await em.persistAndFlush(user);
-    return user;
+    return em.persistAndFlush(user).then(() => user);
   }
 
   findOne(em: EntityManager, dto: FindUserDto) {
@@ -24,7 +35,17 @@ export class UsersService {
       if (user && this._validatePassword(password, user.password)) {
         return user;
       }
-      return null;
+
+      throw new ValidationException([
+        {
+          field: 'email',
+          messages: ['Email or password is incorrect'],
+        },
+        {
+          field: 'password',
+          messages: [' '],
+        },
+      ]);
     });
   }
 

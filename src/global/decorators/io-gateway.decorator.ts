@@ -13,6 +13,7 @@ export function IoGateway<T extends GatewayMetadata>(opts: T): ClassDecorator {
 
   return (target: any) => {
     Reflect.defineMetadata(IO_NAMESPACE_METADATA, opts.namespace, target);
+    console.log(opts.namespace);
     WebSocketGateway(opts)(target);
   };
 }

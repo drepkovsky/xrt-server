@@ -1,4 +1,4 @@
-import { CRUDGroup } from '#app/global/types/common\.types';
+import { CRUDGroup } from '#app/global/types/common.types';
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
 import { Entity, Property } from '@mikro-orm/core';
 import { IsEmail, IsOptional, MaxLength, MinLength } from 'class-validator';
@@ -11,7 +11,7 @@ export class User extends XrBaseEntity<User> {
   @IsOptional({ groups: [CRUDGroup.UPDATE, CRUDGroup.FIND] })
   name!: string;
 
-  @Property()
+  @Property({ unique: true })
   @MaxLength(255)
   @MinLength(3)
   @IsEmail()

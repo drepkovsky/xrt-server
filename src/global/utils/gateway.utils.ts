@@ -8,7 +8,7 @@ export function buildNamespaceRegex(namespace: string) {
     }
     return part;
   });
-  return new RegExp(`^${parts.join('/')}$`);
+  return new RegExp(`${parts.join('/')}`);
 }
 
 /**

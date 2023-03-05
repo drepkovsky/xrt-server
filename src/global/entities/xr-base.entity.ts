@@ -21,7 +21,7 @@ export class XrBaseEntity<E extends { id: string }> extends BaseEntity<
   @Property()
   updatedAt: Date = new Date();
 
-  @Property()
+  @Property({ nullable: true })
   deletedAt?: Date;
 
   /**

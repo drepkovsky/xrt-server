@@ -1,8 +1,7 @@
-import { DateProperty } from '#app/global/decorators/date-property.decorator';
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
 import { Respondent } from '#app/studies/entities/respondents.entity';
 import { Task } from '#app/studies/modules/task/entities/task.entity';
-import { Entity, ManyToOne, Ref } from '@mikro-orm/core';
+import { Entity, ManyToOne, Property, Ref } from '@mikro-orm/core';
 
 @Entity()
 export class TaskResponse extends XrBaseEntity<TaskResponse> {
@@ -12,9 +11,9 @@ export class TaskResponse extends XrBaseEntity<TaskResponse> {
   @ManyToOne(() => Task)
   task!: Ref<Task>;
 
-  @DateProperty()
+  @Property({ nullable: true })
   completedAt?: Date;
 
-  @DateProperty()
+  @Property({ nullable: true })
   skippedAt?: Date;
 }

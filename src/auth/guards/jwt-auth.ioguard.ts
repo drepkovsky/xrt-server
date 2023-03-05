@@ -1,4 +1,3 @@
-import { JwtAuthGuard } from '#app/auth/guards/jwt-auth.guard';
 import { IoCanActivate } from '#app/global/interfaces/io-can-activate.interface';
 import { UsersService } from '#app/users/users.service';
 import { MikroORM } from '@mikro-orm/core';
@@ -15,12 +14,14 @@ export class JwtAuthIoGuard implements IoCanActivate {
   ) {}
 
   async canActivate(socket: Socket, io: Namespace): Promise<boolean> {
-    const token = socket.handshake.headers.authorization.split(' ')[1];
+    const token = socket.handshake.auth.token;
     const jwtPayload = await this.jwtService.verify(token);
-    const user = await this.userService.findOne(this.orm.em, jwtPayload.sub);
-    if (!user) return false;
-    socket.data.user = user;
+    return this.orm.em.transactional(async (em) => {
+      const user = await this.userService.findOne(em, jwtPayload.sub);
+      if (!user) return false;
+      socket.data.user = user;
 
-    return true;
+      return true;
+    });
   }
 }

@@ -28,10 +28,8 @@ export abstract class IoBaseGateway
    * Resolve guards attached through @UseIoGuard() decorator.
    */
   private resolveGuards(): IoCanActivate[] {
-    const metatypes: (IoCanActivate | Function)[] = Reflect.getMetadata(
-      IO_GUARDS_METADATA,
-      this.constructor,
-    );
+    const metatypes: (IoCanActivate | Function)[] =
+      Reflect.getMetadata(IO_GUARDS_METADATA, this.constructor) || [];
     return metatypes
       .map((metatype) => {
         if ((metatype as IoCanActivate).canActivate) {
