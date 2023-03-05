@@ -1,17 +1,18 @@
-import { CRUDGroup } from '#app/global/types/common.types';
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
+import { CRUDGroup } from '#app/global/types/common.types';
 import { Questionnaire } from '#app/studies/modules/questionnaire/entities/questionnaire.entity';
 import { Task } from '#app/studies/modules/task/entities/task.entity';
 import { User } from '#app/users/entities/user.entity';
 import {
   Collection,
   Entity,
+  Enum,
   ManyToOne,
   OneToMany,
+  Property,
   Ref,
   Unique,
 } from '@mikro-orm/core';
-import { Type } from 'class-transformer';
 import {
   IsOptional,
   MaxLength,
@@ -19,7 +20,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { nanoid } from 'nanoid';
-import { Property } from 'node_modules/@mikro-orm/core/decorators/Property.js';
 
 export enum StudyStatus {
   DRAFT = 'draft',
@@ -27,14 +27,13 @@ export enum StudyStatus {
   FINISHED = 'finished',
 }
 
-
 @Entity()
 export class Study extends XrBaseEntity<Study> {
   @Property()
   @MaxLength(255)
   @MinLength(3)
   @IsOptional({ groups: [CRUDGroup.UPDATE, CRUDGroup.FIND, CRUDGroup.CREATE] })
-  name: string = `New Study #${nanoid(4)}`;
+  name = `New Study #${nanoid(4)}`;
 
   @Unique({
     options: { partialFilterExpression: { deletedAt: { $exists: false } } },
@@ -42,10 +41,10 @@ export class Study extends XrBaseEntity<Study> {
   @Property()
   token = nanoid();
 
-  @Property({type:'enum'})
+  @Enum(() => StudyStatus)
   status: StudyStatus = StudyStatus.DRAFT;
 
-  @ManyToOne(() => User,{serializer: (u: User) => u?.name})
+  @ManyToOne(() => User, { serializer: (u: User) => u?.name })
   createdBy!: Ref<User>;
 
   @OneToMany(() => Task, 'study')

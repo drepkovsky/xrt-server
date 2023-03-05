@@ -1,8 +1,7 @@
-import { CRUDGroup } from '#app/global/types/common.types';
-import { DateProperty } from '#app/global/decorators/date-property.decorator';
 import WithSoftDelete from '#app/global/filters/with-soft-delete.filter';
-import { BaseEntity, Entity, PrimaryKey } from '@mikro-orm/core';
-import { IsOptional, IsNotEmpty, IsString } from 'class-validator';
+import { CRUDGroup } from '#app/global/types/common.types';
+import { BaseEntity, Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 @WithSoftDelete()
 @Entity({ abstract: true })
@@ -16,13 +15,13 @@ export class XrBaseEntity<E extends { id: string }> extends BaseEntity<
   @IsNotEmpty({ groups: [CRUDGroup.UPDATE] })
   id!: string;
 
-  @DateProperty({ default: 'CURRENT_TIMESTAMP' })
+  @Property()
   createdAt: Date = new Date();
 
-  @DateProperty({})
+  @Property()
   updatedAt: Date = new Date();
 
-  @DateProperty()
+  @Property()
   deletedAt?: Date;
 
   /**
