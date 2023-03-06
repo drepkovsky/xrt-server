@@ -7,7 +7,6 @@ import { Question } from '#app/studies/entities/question.entity';
 export class CreateQuestionDto extends PickType(Question, ['text', 'type']) {}
 
 @ValidationGroup(CRUDGroup.UPDATE)
-export class UpdateQuestionDto extends IntersectionType(
-  PartialType(CreateQuestionDto),
+export class UpdateQuestionDto extends PartialType(
   PickType(Question, ['id', 'text', 'type', 'options']),
 ) {}

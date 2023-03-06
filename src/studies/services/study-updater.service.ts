@@ -184,7 +184,7 @@ export class StudyUpdaterService {
   ) {
     const optionMap = new Map<string, Partial<Option>>();
 
-    for (const optionDto of dto.options) {
+    for (const optionDto of dto.options || []) {
       optionMap.set(optionDto.id, optionDto);
     }
 
@@ -193,11 +193,11 @@ export class StudyUpdaterService {
       if (optionDto) {
         option.assign(optionDto);
       }
+    }
 
-      for (const field of this.questionUpdatableFields) {
-        if (!isNullish(dto[field])) {
-          question[field] = dto[field];
-        }
+    for (const field of this.questionUpdatableFields) {
+      if (!isNullish(dto[field])) {
+        question[field] = dto[field] as any;
       }
     }
   }
