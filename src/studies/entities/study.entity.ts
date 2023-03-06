@@ -35,11 +35,11 @@ export class Study extends XrBaseEntity<Study> {
   @IsOptional({ groups: [CRUDGroup.UPDATE, CRUDGroup.FIND, CRUDGroup.CREATE] })
   name = `New Study #${nanoid(4)}`;
 
-  @Property()
+  @Property({ nullable: true })
   @MaxLength(500)
   @MinLength(3)
   @IsOptional({ groups: [CRUDGroup.UPDATE, CRUDGroup.FIND, CRUDGroup.CREATE] })
-  description = 'Enter study description here';
+  description?: string;
 
   @Unique({
     options: { partialFilterExpression: { deletedAt: { $exists: false } } },
