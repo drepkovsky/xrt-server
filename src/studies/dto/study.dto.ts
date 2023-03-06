@@ -14,7 +14,10 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class StudyUpdatePayloadDto extends PickType(Study, ['name']) {
+export class StudyUpdatePayloadDto extends PickType(Study, [
+  'name',
+  'description',
+]) {
   @ValidateNested({ each: true })
   @Type(() => UpdateTaskDto)
   tasks?: UpdateTaskDto[];

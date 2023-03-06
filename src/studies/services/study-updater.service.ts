@@ -25,6 +25,9 @@ type UpdatableStudy = Loaded<
 
 @Injectable()
 export class StudyUpdaterService {
+  studyUpdatableFields: (keyof Study)[] = ['name', 'description'];
+  questionUpdatableFields: (keyof Question)[] = ['text', 'type'];
+
   handleUpdate(
     em: EntityManager,
     study: UpdatableStudy,
@@ -51,7 +54,7 @@ export class StudyUpdaterService {
       }
     }
 
-    for (const field of ['name', 'description']) {
+    for (const field of this.studyUpdatableFields) {
       if (dto[field]) {
         study[field] = dto[field];
       }
@@ -160,7 +163,7 @@ export class StudyUpdaterService {
         option.assign(optionDto);
       }
 
-      for (const field of ['text', 'type']) {
+      for (const field of this.questionUpdatableFields) {
         if (dto[field]) {
           question[field] = dto[field];
         }
