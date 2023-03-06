@@ -1,3 +1,4 @@
+import { isNullish } from '#app/global/utils/misc.utils';
 import { UpdateQuestionDto } from '#app/studies/dto/question.dto';
 import { UpdateQuestionnaireDto } from '#app/studies/dto/questionnaire.dto';
 import {
@@ -55,7 +56,7 @@ export class StudyUpdaterService {
     }
 
     for (const field of this.studyUpdatableFields) {
-      if (dto[field]) {
+      if (!isNullish(dto[field])) {
         study[field] = dto[field];
       }
     }
@@ -164,7 +165,7 @@ export class StudyUpdaterService {
       }
 
       for (const field of this.questionUpdatableFields) {
-        if (dto[field]) {
+        if (!isNullish(dto[field])) {
           question[field] = dto[field];
         }
       }

@@ -37,7 +37,7 @@ export class Study extends XrBaseEntity<Study> {
 
   @Property({ nullable: true })
   @MaxLength(500)
-  @MinLength(3)
+  @MinLength(0)
   @IsOptional({ groups: [CRUDGroup.UPDATE, CRUDGroup.FIND, CRUDGroup.CREATE] })
   description?: string;
 

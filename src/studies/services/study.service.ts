@@ -8,7 +8,6 @@ import { nanoid } from 'nanoid';
 
 @Injectable()
 export class StudyService {
-  private updatableFields = ['name'];
   private findOnePopulate = [
     'createdBy',
     'tasks',
@@ -73,7 +72,18 @@ export class StudyService {
 
     return result;
   }
-  async update(em: EntityManager, dto: UpdateStudyDto, user: User) {
+  async update(
+    em: EntityManager,
+    dto: UpdateStudyDto,
+    user: User,
+  ): Promise<
+    Loaded<
+      Study,
+      | 'tasks'
+      | 'preStudyQuestionnaire.questions.options'
+      | 'postStudyQuestionnaire.questions.options'
+    >
+  > {
     const study = await this.findOne(em, dto.id, user, [
       'tasks',
       'preStudyQuestionnaire.questions.options',
@@ -92,7 +102,7 @@ export class StudyService {
       this.studyUpdaterService.handleAdd(em, study, dto.add);
     }
 
-    return em.persistAndFlush(study);
+    return em.persistAndFlush(study).then(() => study);
   }
 
   async remove(em: EntityManager, id: string, user: User) {
