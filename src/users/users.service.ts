@@ -20,7 +20,7 @@ export class UsersService {
 
     const user = em.create(User, {
       ...dto,
-      password: this._hashPassword(dto.password),
+      password: await this._hashPassword(dto.password),
     });
 
     return em.persistAndFlush(user).then(() => user);
@@ -30,9 +30,9 @@ export class UsersService {
     return em.findOne(User, dto);
   }
 
-  validateUser(em: EntityManager, email: string, password: string) {
-    return this.findOne(em, { email }).then((user) => {
-      if (user && this._validatePassword(password, user.password)) {
+  async validateUser(em: EntityManager, email: string, password: string) {
+    return this.findOne(em, { email }).then(async (user) => {
+      if (user && (await this._validatePassword(password, user.password))) {
         return user;
       }
 

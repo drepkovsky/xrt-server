@@ -50,11 +50,11 @@ export class Study extends XrBaseEntity<Study> {
   @OneToMany(() => Task, 'study')
   tasks: Collection<Task> = new Collection<Task>(this);
 
-  @ManyToOne(() => Questionnaire)
+  @ManyToOne(() => Questionnaire, { nullable: true })
   @ValidateNested({ groups: [CRUDGroup.UPDATE] })
-  preStudyQuestionnaire!: Ref<Questionnaire>;
+  preStudyQuestionnaire?: Ref<Questionnaire>;
 
-  @ManyToOne(() => Questionnaire)
+  @ManyToOne(() => Questionnaire, { nullable: true })
   @ValidateNested({ groups: [CRUDGroup.UPDATE] })
-  postStudyQuestionnaire!: Ref<Questionnaire>;
+  postStudyQuestionnaire?: Ref<Questionnaire>;
 }
