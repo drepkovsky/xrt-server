@@ -65,9 +65,7 @@ export class StudyService {
       },
     );
 
-    if (!result) {
-      throw new NotFoundException(`Study with id ${id} not found`);
-    }
+    if (!result) throw new NotFoundException(`Study with id ${id} not found`);
 
     return result;
   }

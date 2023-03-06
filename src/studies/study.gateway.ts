@@ -6,7 +6,6 @@ import { IoBaseGateway } from '#app/global/gateway/io-base.gateway';
 import { UpdateStudyDto } from '#app/studies/dto/study.dto';
 import { StudyService } from '#app/studies/study.service';
 import { User } from '#app/users/entities/user.entity';
-import { Param } from '@nestjs/common';
 import { MessageBody, SubscribeMessage } from '@nestjs/websockets';
 
 @UseIoGuard(JwtAuthIoGuard)
@@ -34,7 +33,7 @@ export class StudyGateway extends IoBaseGateway {
   }
 
   @SubscribeMessage('findOne')
-  async findOne(@UserParam() user: User, @Param('id') id: string) {
+  async findOne(@UserParam() user: User, @MessageBody('id') id: string) {
     return this.orm.em.transactional(async (em) => {
       return this.studyService.findOne(em, id, user);
     });

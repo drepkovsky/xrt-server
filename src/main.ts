@@ -1,4 +1,5 @@
 import { AppModule } from '#app/app.module';
+import { WsExceptionFilter } from '#app/global/exceptions/ws-exception-filter';
 import { NestFactory } from '@nestjs/core';
 
 async function bootstrap() {
