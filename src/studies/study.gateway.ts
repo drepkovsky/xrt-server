@@ -4,7 +4,7 @@ import { IoGateway } from '#app/global/decorators/io-gateway.decorator';
 import { UseIoGuard } from '#app/global/decorators/use-io-guard.decorator';
 import { IoBaseGateway } from '#app/global/gateway/io-base.gateway';
 import { UpdateStudyDto } from '#app/studies/dto/study.dto';
-import { StudyService } from '#app/studies/study.service';
+import { StudyService } from '#app/studies/services/study.service';
 import { User } from '#app/users/entities/user.entity';
 import { MessageBody, SubscribeMessage } from '@nestjs/websockets';
 
