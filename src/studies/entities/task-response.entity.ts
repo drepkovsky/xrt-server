@@ -5,10 +5,10 @@ import { Entity, ManyToOne, Property, Ref } from '@mikro-orm/core';
 
 @Entity()
 export class TaskResponse extends XrBaseEntity<TaskResponse> {
-  @ManyToOne(() => Respondent)
+  @ManyToOne(() => Respondent, { ref: true })
   respondent!: Ref<Respondent>;
 
-  @ManyToOne(() => Task)
+  @ManyToOne(() => Task, { ref: true })
   task!: Ref<Task>;
 
   @Property({ nullable: true })

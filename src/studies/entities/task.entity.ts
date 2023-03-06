@@ -8,12 +8,20 @@ import {
   Entity,
   EventArgs,
   EventSubscriber,
+  Index,
   ManyToOne,
   OneToMany,
   Property,
   Ref,
+  Subscriber,
 } from '@mikro-orm/core';
-import { IsOptional, Matches, MaxLength, MinLength } from 'class-validator';
+import {
+  IsOptional,
+  Matches,
+  MaxLength,
+  Min,
+  MinLength,
+} from 'class-validator';
 import { nanoid } from 'nanoid';
 
 @Entity()
@@ -22,13 +30,18 @@ export class Task extends XrBaseEntity<Task> {
   @MaxLength(255)
   @MinLength(2)
   @IsOptional({ groups: [CRUDGroup.UPDATE] })
-  name: string = 'New Task ' + nanoid(4);
+  name: string = 'Task ' + nanoid(4);
 
   /**
    * Event to listen to in order to trigger this task
    * matches only lowercase alphanumeric strings withouth spaces, with dashes and underscores allowed
    */
   @Property()
+  @Index({
+    name: 'task_event_name_study_unique',
+    expression:
+      'CREATE UNIQUE INDEX "task_event_name_study_unique" ON "task" ("event_name", "study_id", "deleted_at") WHERE "deleted_at" IS NULL',
+  })
   @MaxLength(255)
   @MinLength(2)
   @IsOptional({ groups: [CRUDGroup.UPDATE] })
@@ -38,12 +51,17 @@ export class Task extends XrBaseEntity<Task> {
   eventName: string = normalizeEventName(this.name);
 
   @Property()
+  @Min(0)
+  @IsOptional({ groups: [CRUDGroup.UPDATE] })
+  order: number = 0;
+
+  @Property()
   @MaxLength(500)
   @MinLength(1)
   @IsOptional({ groups: [CRUDGroup.UPDATE] })
-  text: string = 'Enter task text here';
+  text: string = '';
 
-  @ManyToOne(() => Study)
+  @ManyToOne(() => Study, { ref: true })
   study!: Ref<Study>;
 
   @Property()
@@ -53,13 +71,14 @@ export class Task extends XrBaseEntity<Task> {
   responses: Collection<TaskResponse> = new Collection<TaskResponse>(this);
 }
 
+@Subscriber()
 export class TaskSubscriber implements EventSubscriber<Task> {
   getSubscribedEntities() {
     return [Task];
   }
 
   async beforeUpdate(args: EventArgs<Task>) {
-    args.entity.eventName = normalizeEventName(args.entity.name);
+    args.entity.eventName = normalizeEventName(args.entity.eventName);
   }
 
   async beforeCreate(args: EventArgs<Task>) {

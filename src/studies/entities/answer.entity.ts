@@ -7,7 +7,7 @@ import { IsOptional, MaxLength, MinLength } from 'class-validator';
 
 @Entity()
 export class Answer extends XrBaseEntity<Answer> {
-  @ManyToOne(() => Question, { serializer: (q) => q.id })
+  @ManyToOne(() => Question, { serializer: (q) => q.id, ref: true })
   question!: Ref<Question>;
 
   @MinLength(1)
@@ -16,7 +16,7 @@ export class Answer extends XrBaseEntity<Answer> {
   @Property({ nullable: true })
   text?: string;
 
-  @ManyToOne(() => Option)
+  @ManyToOne(() => Option, { ref: true })
   option?: Ref<Option>;
 
   @ManyToOne(() => Respondent)

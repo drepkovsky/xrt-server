@@ -10,11 +10,11 @@ import {
 } from '#app/studies/dto/study.dto';
 import { UpdateTaskDto } from '#app/studies/dto/task.dto';
 import { Option } from '#app/studies/entities/option.entity';
-import { Question } from '#app/studies/entities/question.entity';
+import { Question, QuestionType } from '#app/studies/entities/question.entity';
 import { Questionnaire } from '#app/studies/entities/questionnaire.entity';
 import { Study } from '#app/studies/entities/study.entity';
 import { Task } from '#app/studies/entities/task.entity';
-import { EntityManager, Loaded } from '@mikro-orm/core';
+import { EntityManager, Loaded, Reference, wrap } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
 
 type UpdatableStudy = Loaded<
@@ -68,7 +68,16 @@ export class StudyUpdaterService {
     dto: StudyRemovePayloadDto,
   ) {
     if (dto.resource === StudyRemoveResource.TASK) {
-      study.tasks.remove(em.getReference(Task, dto.id));
+      const task = study.tasks.getItems().find((t) => t.id === dto.id);
+      const order = task.order;
+      study.tasks.getItems().forEach((t) => {
+        if (t.order > order) {
+          t.order--;
+        }
+      });
+
+      study.tasks.remove(task);
+      em.remove(task);
     } else if (dto.resource === StudyRemoveResource.QUESTIONNAIRE) {
       if (dto.id === study.preStudyQuestionnaire.id) {
         study.preStudyQuestionnaire = null;
@@ -90,9 +99,22 @@ export class StudyUpdaterService {
     }
   }
 
-  handleAdd(em: EntityManager, study: UpdatableStudy, dto: StudyAddPayloadDto) {
+  async handleAdd(
+    em: EntityManager,
+    study: UpdatableStudy,
+    dto: StudyAddPayloadDto,
+  ) {
     if (dto.resource === StudyAddResource.TASK) {
-      const task = em.create(Task, {});
+      const highestOrder = Math.max(
+        ...study.tasks.$.getItems().map((t) => t.order),
+        0,
+      );
+
+      const order = highestOrder + 1;
+      const task = em.create(Task, {
+        order,
+        name: `Task ${order}`,
+      });
       study.tasks.add(task);
     } else if (
       [
@@ -101,15 +123,23 @@ export class StudyUpdaterService {
       ].includes(dto.resource)
     ) {
       const questionnaire = em.create(Questionnaire, {});
+      await questionnaire.questions.loadItems({
+        populate: ['options'],
+      });
+
       if (dto.resource === StudyAddResource.PRE_STUDY_QUESTIONNAIRE) {
-        study.preStudyQuestionnaire.set(questionnaire);
+        study.preStudyQuestionnaire = wrap(questionnaire).toReference() as any;
       }
 
       if (dto.resource === StudyAddResource.POST_STUDY_QUESTIONNAIRE) {
-        study.postStudyQuestionnaire.set(questionnaire);
+        study.postStudyQuestionnaire = wrap(questionnaire).toReference() as any;
       }
     } else if (dto.resource === StudyAddResource.QUESTION) {
-      const question = em.create(Question, dto);
+      const question = em.create(Question, {
+        text: '',
+        type: QuestionType.SINGLE_LINE,
+      });
+      em.persist(question);
       if (dto.questionnaireId === study.preStudyQuestionnaire.id) {
         study.preStudyQuestionnaire.$.questions.add(question);
       } else if (dto.questionnaireId === study.postStudyQuestionnaire.id) {

@@ -37,7 +37,7 @@ export class Question extends XrBaseEntity<Question> {
   @Property()
   text!: string;
 
-  @ManyToOne(() => Questionnaire)
+  @ManyToOne(() => Questionnaire, { ref: true })
   questionnaire!: Ref<Questionnaire>;
 
   @Enum(() => QuestionType)

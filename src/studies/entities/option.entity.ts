@@ -20,7 +20,7 @@ export class Option extends XrBaseEntity<Option> {
   @IsOptional({ groups: [CRUDGroup.UPDATE] })
   text!: string;
 
-  @ManyToOne(() => Question)
+  @ManyToOne(() => Question, { ref: true })
   question!: Ref<Question>;
 
   @OneToMany(() => Answer, (a) => a.option)

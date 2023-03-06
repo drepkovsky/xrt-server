@@ -50,17 +50,17 @@ export class Study extends XrBaseEntity<Study> {
   @Enum(() => StudyStatus)
   status: StudyStatus = StudyStatus.DRAFT;
 
-  @ManyToOne(() => User, { serializer: (u: User) => u?.name })
+  @ManyToOne(() => User, { serializer: (u: User) => u?.name, ref: true })
   createdBy!: Ref<User>;
 
   @OneToMany(() => Task, 'study')
   tasks: Collection<Task> = new Collection<Task>(this);
 
-  @ManyToOne(() => Questionnaire, { nullable: true })
+  @ManyToOne(() => Questionnaire, { nullable: true, ref: true })
   @ValidateNested({ groups: [CRUDGroup.UPDATE] })
   preStudyQuestionnaire?: Ref<Questionnaire>;
 
-  @ManyToOne(() => Questionnaire, { nullable: true })
+  @ManyToOne(() => Questionnaire, { nullable: true, ref: true })
   @ValidateNested({ groups: [CRUDGroup.UPDATE] })
   postStudyQuestionnaire?: Ref<Questionnaire>;
 }

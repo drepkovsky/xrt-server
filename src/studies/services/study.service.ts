@@ -11,7 +11,8 @@ export class StudyService {
   private findOnePopulate = [
     'createdBy',
     'tasks',
-    'postStudyQuestionnaire',
+    'postStudyQuestionnaire.questions.options',
+    'preStudyQuestionnaire.questions.options',
   ] as const;
   private findManyPopulate = ['createdBy'] as const;
 
@@ -44,6 +45,9 @@ export class StudyService {
       {
         orderBy: {
           createdAt: 'desc',
+          tasks: {
+            id: 'asc',
+          },
         },
         populate: populate,
       },
