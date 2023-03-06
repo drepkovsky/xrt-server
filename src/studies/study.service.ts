@@ -26,6 +26,7 @@ export class StudyService {
     await em.persistAndFlush(study);
     return study;
   }
+
   findAll<R extends string = (typeof this.findManyPopulate)[number]>(
     em: EntityManager,
     user: User,
@@ -82,6 +83,7 @@ export class StudyService {
       ...payload,
     });
   }
+
   async remove(em: EntityManager, id: string, user: User) {
     const study = await this.findOne(em, id, user, [
       'tasks',
