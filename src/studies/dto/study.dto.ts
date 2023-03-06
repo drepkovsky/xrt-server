@@ -14,27 +14,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-@ValidationGroup(CRUDGroup.UPDATE)
-export class UpdateStudyDto {
-  @IsString()
-  id: string;
-
-  @Type(() => StudyUpdatePayloadDto)
-  @ValidateNested()
-  @IsOptional()
-  update?: StudyUpdatePayloadDto;
-
-  @Type(() => StudyRemovePayloadDto)
-  @ValidateNested()
-  @IsOptional()
-  remove?: StudyRemovePayloadDto;
-
-  @Type(() => StudyAddPayloadDto)
-  @ValidateNested()
-  @IsOptional()
-  add?: StudyAddPayloadDto;
-}
-
 export class StudyUpdatePayloadDto extends PickType(Study, ['name']) {
   @ValidateNested({ each: true })
   @Type(() => UpdateTaskDto)
@@ -82,4 +61,25 @@ export class StudyAddPayloadDto {
   @ValidateIf((o) => o.resource === StudyAddResource.OPTION)
   @IsString()
   questionId?: string;
+}
+
+@ValidationGroup(CRUDGroup.UPDATE)
+export class UpdateStudyDto {
+  @IsString()
+  id: string;
+
+  @Type(() => StudyUpdatePayloadDto)
+  @ValidateNested()
+  @IsOptional()
+  update?: StudyUpdatePayloadDto;
+
+  @Type(() => StudyRemovePayloadDto)
+  @ValidateNested()
+  @IsOptional()
+  remove?: StudyRemovePayloadDto;
+
+  @Type(() => StudyAddPayloadDto)
+  @ValidateNested()
+  @IsOptional()
+  add?: StudyAddPayloadDto;
 }
