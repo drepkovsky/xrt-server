@@ -1,7 +1,5 @@
 import { CRUDGroup } from '#app/global/types/common.types';
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
-import { Answer } from '#app/studies/modules/questionnaire/entities/answer.entity';
-import { Question } from '#app/studies/modules/questionnaire/entities/question.entity';
 import {
   Collection,
   Entity,
@@ -11,6 +9,8 @@ import {
   Ref,
 } from '@mikro-orm/core';
 import { IsOptional, MaxLength, MinLength } from 'class-validator';
+import { Answer } from '#app/studies/entities/answer.entity';
+import { Question } from '#app/studies/entities/question.entity';
 
 @Entity()
 export class Option extends XrBaseEntity<Option> {

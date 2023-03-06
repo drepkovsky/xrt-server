@@ -1,7 +1,7 @@
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
 import { CRUDGroup } from '#app/global/types/common.types';
-import { Questionnaire } from '#app/studies/modules/questionnaire/entities/questionnaire.entity';
-import { Task } from '#app/studies/modules/task/entities/task.entity';
+import { Questionnaire } from '#app/studies/entities/questionnaire.entity';
+import { Task } from '#app/studies/entities/task.entity';
 import { User } from '#app/users/entities/user.entity';
 import {
   Collection,

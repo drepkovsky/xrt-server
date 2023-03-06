@@ -1,8 +1,5 @@
 import { CRUDGroup } from '#app/global/types/common.types';
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
-import { Answer } from '#app/studies/modules/questionnaire/entities/answer.entity';
-import { Option } from '#app/studies/modules/questionnaire/entities/option.entity';
-import { Questionnaire } from '#app/studies/modules/questionnaire/entities/questionnaire.entity';
 import {
   Collection,
   Entity,
@@ -12,7 +9,16 @@ import {
   Enum,
   Property,
 } from '@mikro-orm/core';
-import { IsOptional, MaxLength, MinLength } from 'class-validator';
+import {
+  IsOptional,
+  MaxLength,
+  MinLength,
+  ValidateNested,
+} from 'class-validator';
+import { Answer } from '#app/studies/entities/answer.entity';
+import { Questionnaire } from '#app/studies/entities/questionnaire.entity';
+import { Option } from '#app/studies/entities/option.entity';
+import { Type } from 'class-transformer';
 
 export enum QuestionType {
   SINGLE_LINE = 'single-line',
@@ -40,6 +46,9 @@ export class Question extends XrBaseEntity<Question> {
   @OneToMany(() => Answer, 'question')
   answers: Collection<Answer> = new Collection<Answer>(this);
 
+  @Type(() => Option)
+  @ValidateNested({ each: true, groups: [CRUDGroup.UPDATE] })
+  @IsOptional({ groups: [CRUDGroup.UPDATE] })
   @OneToMany(() => Option, 'question')
   options: Collection<Option> = new Collection<Option>(this);
 }
