@@ -35,7 +35,6 @@ export class PublicService {
       study: {
         id: study.id,
       },
-      startedAt: new Date(),
     });
     await em.persistAndFlush(respondent);
 
