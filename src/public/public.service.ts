@@ -9,26 +9,14 @@ import { promisify } from 'util';
 
 @Injectable()
 export class PublicService {
-  findStudy(em: EntityManager, token: string) {
-    return em.findOne(Study, { token });
-  }
-
   async startRun(
     em: EntityManager,
-    token: string,
+    study: Study,
     session: Session & Partial<SessionData>,
   ) {
-    if (session.runs && session.runs.has(token)) {
+    if (session.runs && session.runs.has(study.token)) {
       throw new BadRequestException('You have already started this study');
     }
-
-    const study = await em.findOne(
-      Study,
-      { token },
-      {
-        populate: ['tasks'],
-      },
-    );
 
     // TODO
     const respondent = em.create(Respondent, {
@@ -39,7 +27,7 @@ export class PublicService {
     await em.persistAndFlush(respondent);
 
     session.runs = session.runs || new Map();
-    session.runs.set(token, {
+    session.runs.set(study.token, {
       respondentId: respondent.id,
       studyId: study.id,
       tasksDone: [],
@@ -52,10 +40,10 @@ export class PublicService {
 
   async getNextTask(
     em: EntityManager,
-    token: string,
+    study: Study,
     session: Session & Partial<SessionData>,
   ) {
-    const run = session.runs.get(token);
+    const run = session.runs.get(study.token);
     if (!run) {
       throw new BadRequestException('You have not started this study');
     }
@@ -104,10 +92,10 @@ export class PublicService {
 
   async finishTask(
     em: EntityManager,
-    token: string,
+    study: Study,
     session: Session & Partial<SessionData>,
   ) {
-    const run = session.runs.get(token);
+    const run = session.runs.get(study.token);
     if (!run) {
       throw new BadRequestException('You have not started this study');
     }
@@ -138,10 +126,10 @@ export class PublicService {
 
   async finishRun(
     em: EntityManager,
-    token: string,
+    study: Study,
     session: Session & Partial<SessionData>,
   ) {
-    const run = session.runs.get(token);
+    const run = session.runs.get(study.token);
 
     if (!run) {
       throw new BadRequestException('You have not started this study');

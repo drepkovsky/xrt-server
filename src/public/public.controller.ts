@@ -1,49 +1,50 @@
+import { PublicStudy } from '#app/public/decorators/public-study.decorator';
+import { UsePublicStudy } from '#app/public/decorators/use-public-study.decorator';
 import { PublicService } from '#app/public/public.service';
-import { RunData } from '#app/public/public.types';
+import { Task } from '#app/studies/entities/task.entity';
 import { MikroORM } from '@mikro-orm/core';
 import { Controller, Get, Req } from '@nestjs/common';
 import { Post } from '@nestjs/common/decorators/index.js';
 import { Request } from 'express';
 
 @Controller('public')
+@UsePublicStudy()
 export class PublicController {
   constructor(
     private readonly orm: MikroORM,
     private readonly publicService: PublicService,
   ) {}
 
-  @Get('study/:token')
-  getStudy(@Req() req: Request) {
+  @Get('')
+  getStudy(@PublicStudy() study) {
+    return study;
+  }
+
+  @Post('run/start')
+  createRun(@Req() req: Request, @PublicStudy() study): Promise<boolean> {
     return this.orm.em.transactional(async (em) => {
-      return this.publicService.findStudy(em, req.params.token);
+      return this.publicService.startRun(em, study, req.session);
     });
   }
 
-  @Post('study/:token/run')
-  createRun(@Req() req: Request) {
+  @Get('task')
+  getNextTask(@Req() req: Request, @PublicStudy() study): Promise<Task | null> {
     return this.orm.em.transactional(async (em) => {
-      return this.publicService.startRun(em, req.params.token, req.session);
+      return this.publicService.getNextTask(em, study, req.session);
     });
   }
 
-  @Get('study/:token/task')
-  getNextTask(@Req() req: Request) {
+  @Post('task/finish')
+  finishTask(@Req() req: Request, @PublicStudy() study): Promise<boolean> {
     return this.orm.em.transactional(async (em) => {
-      return this.publicService.getNextTask(em, req.params.token, req.session);
+      return this.publicService.finishTask(em, study, req.session);
     });
   }
 
-  @Post('study/:token/task/')
-  finishTask(@Req() req: Request) {
+  @Post('run/finish')
+  finishRun(@Req() req: Request, @PublicStudy() study): Promise<boolean> {
     return this.orm.em.transactional(async (em) => {
-      return this.publicService.finishTask(em, req.params.token, req.session);
-    });
-  }
-
-  @Post('study/:token/finish')
-  finishRun(@Req() req: Request) {
-    return this.orm.em.transactional(async (em) => {
-      return this.publicService.finishRun(em, req.params.token, req.session);
+      return this.publicService.finishRun(em, study, req.session);
     });
   }
 }

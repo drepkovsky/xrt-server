@@ -1,6 +1,14 @@
+import { Study } from '#app/studies/entities/study.entity';
+
 declare module 'express-session' {
   interface SessionData {
     runs: Map<string, RunData>;
+  }
+}
+
+declare module 'express' {
+  interface Request {
+    publicStudy?: Study;
   }
 }
 
