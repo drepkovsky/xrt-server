@@ -2,6 +2,7 @@ import { AuthModule } from '#app/auth/auth.module';
 import { ConfigKey } from '#app/config/config.types';
 import { configs } from '#app/config/main';
 import { OrmConfig } from '#app/config/orm.config';
+import { GlobalModule } from '#app/global/global.module';
 import { XrValidationPipe } from '#app/global/pipe/xr-validation.pipe';
 import { PublicModule } from '#app/public/public.module';
 import { StudyModule } from '#app/studies/study.module';
@@ -23,6 +24,7 @@ import { APP_PIPE } from '@nestjs/core';
         ...configService.get<OrmConfig>(ConfigKey.ORM),
       }),
     }),
+    GlobalModule,
     AuthModule,
     StudyModule,
     UsersModule,
