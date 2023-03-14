@@ -1,7 +1,21 @@
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
 import { Study } from '#app/studies/entities/study.entity';
 import { TaskResponse } from '#app/studies/entities/task-response.entity';
-import { Collection, Entity, ManyToOne, OneToMany, Ref } from '@mikro-orm/core';
+import {
+  Collection,
+  Entity,
+  Enum,
+  ManyToOne,
+  OneToMany,
+  Property,
+  Ref,
+} from '@mikro-orm/core';
+
+export enum RespondentStatus {
+  RUNNING = 'RUNNING',
+  FINISHED = 'FINISHED',
+  ABANDONED = 'ABANDONED',
+}
 
 @Entity()
 export class Respondent extends XrBaseEntity<Respondent> {
@@ -10,4 +24,13 @@ export class Respondent extends XrBaseEntity<Respondent> {
 
   @OneToMany(() => TaskResponse, (rt) => rt.respondent)
   responses: Collection<TaskResponse> = new Collection<TaskResponse>(this);
+
+  @Enum(() => RespondentStatus)
+  status: RespondentStatus = RespondentStatus.RUNNING;
+
+  @Property({ nullable: true })
+  finishedAt?: Date;
+
+  @Property({ nullable: true })
+  abandonedAt?: Date;
 }
