@@ -1,4 +1,3 @@
-import { VALIDATION_GROUP_METADATA } from '#app/global/decorators/validation-group.decorator';
 import {
   ArgumentMetadata,
   PipeTransform,
@@ -6,6 +5,7 @@ import {
   ValidationPipeOptions,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+import { VALIDATION_GROUP_METADATA } from '../decorators/validation-group.decorator.js';
 
 export class XrValidationPipe implements PipeTransform {
   constructor(private readonly options?: ValidationPipeOptions) {}

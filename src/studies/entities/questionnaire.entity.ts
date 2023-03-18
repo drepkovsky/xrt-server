@@ -4,6 +4,6 @@ import { Collection, Entity, OneToMany } from '@mikro-orm/core';
 
 @Entity()
 export class Questionnaire extends XrBaseEntity<Questionnaire> {
-  @OneToMany(() => Question, 'questionnaire')
+  @OneToMany(() => Question, 'questionnaire', { orphanRemoval: true })
   questions: Collection<Question> = new Collection<Question>(this);
 }
