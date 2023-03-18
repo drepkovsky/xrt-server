@@ -6,6 +6,7 @@ import { MikroORM } from '@mikro-orm/core';
 import { Controller, Get, Req } from '@nestjs/common';
 import { Post } from '@nestjs/common/decorators/index.js';
 import { Request } from 'express';
+import { Study } from '../studies/entities/study.entity.js';
 
 @Controller('public')
 @UsePublicStudy()
@@ -16,7 +17,7 @@ export class PublicController {
   ) {}
 
   @Get('')
-  getStudy(@PublicStudy() study) {
+  getStudy(@PublicStudy() study: Study) {
     return study;
   }
 

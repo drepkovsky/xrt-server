@@ -7,7 +7,7 @@ import { MikroORM } from '@mikro-orm/core';
 import { Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { Body, Delete, Param, Patch } from '@nestjs/common/decorators/index.js';
 
-@UseGuards(JwtAuthGuard, JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('studies')
 export class StudyController {
   constructor(
