@@ -14,7 +14,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
-import connectRedis from 'connect-redis';
+import RedisStore from 'connect-redis';
 import expressSession from 'express-session';
 
 @Module({
@@ -51,15 +51,15 @@ export class AppModule {
     const sessionConfig = this.configService.get<SessionConfig>(
       ConfigKey.SESSION,
     );
-    const RedisStore = connectRedis(expressSession);
 
     const client = this.redisService.getClient(RedisClient.SESSION);
+    const redisStore = new RedisStore({ client });
 
     consumer
       .apply(
         expressSession({
           ...sessionConfig,
-          store: new RedisStore({ client }),
+          store: redisStore,
         }),
       )
       .forRoutes('*');
