@@ -22,28 +22,38 @@ export class PublicController {
   }
 
   @Post('run/start')
-  createRun(@Req() req: Request, @PublicStudy() study): Promise<boolean> {
+  createRun(@Req() req: Request, @PublicStudy() study: Study) {
+    console.log('createRun', req.session, study);
     return this.orm.em.transactional(async (em) => {
       return this.publicService.startRun(em, study, req.session);
     });
   }
 
   @Get('task')
-  getNextTask(@Req() req: Request, @PublicStudy() study): Promise<Task | null> {
+  getNextTask(
+    @Req() req: Request,
+    @PublicStudy() study: Study,
+  ): Promise<Task | null> {
     return this.orm.em.transactional(async (em) => {
       return this.publicService.getNextTask(em, study, req.session);
     });
   }
 
   @Post('task/finish')
-  finishTask(@Req() req: Request, @PublicStudy() study): Promise<boolean> {
+  finishTask(
+    @Req() req: Request,
+    @PublicStudy() study: Study,
+  ): Promise<boolean> {
     return this.orm.em.transactional(async (em) => {
       return this.publicService.finishTask(em, study, req.session);
     });
   }
 
   @Post('run/finish')
-  finishRun(@Req() req: Request, @PublicStudy() study): Promise<boolean> {
+  finishRun(
+    @Req() req: Request,
+    @PublicStudy() study: Study,
+  ): Promise<boolean> {
     return this.orm.em.transactional(async (em) => {
       return this.publicService.finishRun(em, study, req.session);
     });

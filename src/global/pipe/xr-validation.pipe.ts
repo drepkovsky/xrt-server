@@ -13,7 +13,10 @@ export class XrValidationPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata): Promise<any> {
     const { metatype } = metadata;
 
-    const instance = plainToInstance(metatype, value);
+    const instance =
+      value.constructor.name === 'Object' || value.constructor.name === 'Array'
+        ? plainToInstance(metatype, value)
+        : value;
 
     const groups =
       Reflect.getMetadata(VALIDATION_GROUP_METADATA, instance) || [];

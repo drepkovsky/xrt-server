@@ -18,12 +18,14 @@ export class PublicStudyGuard implements CanActivate {
       request.params[key] ||
       request.headers['x-study-token'];
 
+    console.log('token', token);
+
     const study = await this.orm.em.transactional((em) => {
       return em.findOne(Study, { token });
     });
 
     request.publicStudy = study;
 
-    return !!token;
+    return !!study;
   }
 }

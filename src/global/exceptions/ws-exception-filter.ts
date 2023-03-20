@@ -10,13 +10,11 @@ export class WsExceptionFilter extends BaseWsExceptionFilter {
     } = null;
 
     if (exception instanceof WsException) {
-      console.log(exception.name);
       ex = {
         error: exception.name,
         message: exception.message,
       };
     } else if (exception instanceof HttpException) {
-      console.log(exception.name);
       const response = exception.getResponse();
       if (typeof response === 'string') {
         ex = {

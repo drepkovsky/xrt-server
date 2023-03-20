@@ -15,7 +15,11 @@ export class PublicService {
     session: Session & Partial<SessionData>,
   ) {
     if (session.runs && session.runs.has(study.token)) {
-      throw new BadRequestException('You have already started this study');
+      // study is already running we don't want to start it again
+      return {
+        success: false,
+        message: 'Study is already running',
+      };
     }
 
     // TODO
@@ -35,7 +39,10 @@ export class PublicService {
 
     await promisify(session.save).call(session);
 
-    return true;
+    return {
+      success: true,
+      message: 'Study started',
+    };
   }
 
   async getNextTask(
