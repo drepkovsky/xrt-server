@@ -8,8 +8,8 @@ import { Post } from '@nestjs/common/decorators/index.js';
 import { Request } from 'express';
 import { Study } from '../studies/entities/study.entity.js';
 
-@Controller('public')
 @UsePublicStudy()
+@Controller('public')
 export class PublicController {
   constructor(
     private readonly orm: MikroORM,
@@ -23,7 +23,6 @@ export class PublicController {
 
   @Post('run/start')
   createRun(@Req() req: Request, @PublicStudy() study: Study) {
-    console.log('createRun', req.session, study);
     return this.orm.em.transactional(async (em) => {
       return this.publicService.startRun(em, study, req.session);
     });
@@ -40,20 +39,14 @@ export class PublicController {
   }
 
   @Post('task/finish')
-  finishTask(
-    @Req() req: Request,
-    @PublicStudy() study: Study,
-  ): Promise<boolean> {
+  finishTask(@Req() req: Request, @PublicStudy() study: Study) {
     return this.orm.em.transactional(async (em) => {
       return this.publicService.finishTask(em, study, req.session);
     });
   }
 
   @Post('run/finish')
-  finishRun(
-    @Req() req: Request,
-    @PublicStudy() study: Study,
-  ): Promise<boolean> {
+  finishRun(@Req() req: Request, @PublicStudy() study: Study) {
     return this.orm.em.transactional(async (em) => {
       return this.publicService.finishRun(em, study, req.session);
     });

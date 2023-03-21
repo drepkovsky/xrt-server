@@ -15,10 +15,10 @@ export class XrBaseEntity<E extends { id: string }> extends BaseEntity<
   @IsNotEmpty({ groups: [CRUDGroup.UPDATE] })
   id!: string;
 
-  @Property()
+  @Property({ defaultRaw: 'now()' })
   createdAt: Date = new Date();
 
-  @Property()
+  @Property({ defaultRaw: 'now()' })
   updatedAt: Date = new Date();
 
   @Property({ nullable: true })

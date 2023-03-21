@@ -1,8 +1,9 @@
-import { ArgumentsHost, Catch, HttpException } from '@nestjs/common';
+import { ArgumentsHost, Catch, HttpException, Logger } from '@nestjs/common';
 import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets';
 
-@Catch()
+@Catch(WsException, HttpException)
 export class WsExceptionFilter extends BaseWsExceptionFilter {
+  logger = new Logger(WsExceptionFilter.name);
   catch(exception: unknown, host: ArgumentsHost) {
     let ex: {
       error: string;

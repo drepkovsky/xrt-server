@@ -3,39 +3,43 @@ import { Study } from '#app/studies/entities/study.entity';
 import { TaskResponse } from '#app/studies/entities/task-response.entity';
 import { Task } from '#app/studies/entities/task.entity';
 import { EntityManager } from '@mikro-orm/core';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { Session, SessionData } from 'express-session';
 import { promisify } from 'util';
 
 @Injectable()
 export class PublicService {
+  logger = new Logger(PublicService.name);
+
   async startRun(
     em: EntityManager,
     study: Study,
     session: Session & Partial<SessionData>,
   ) {
-    if (session.runs && session.runs.has(study.token)) {
+    if (session.runs && session.runs[study.token]) {
       // study is already running we don't want to start it again
       return {
-        success: false,
-        message: 'Study is already running',
+        success: true,
+        message: 'Study is already running, you can continue',
       };
     }
 
     // TODO
     const respondent = em.create(Respondent, {
-      study: {
-        id: study.id,
-      },
+      study: em.getReference(Study, study.id),
     });
     await em.persistAndFlush(respondent);
 
-    session.runs = session.runs || new Map();
-    session.runs.set(study.token, {
+    session.runs = session.runs || {};
+    session.runs[study.token] = {
       respondentId: respondent.id,
       studyId: study.id,
       tasksDone: [],
-    });
+    };
+
+    this.logger.debug(
+      `Started study ${study.token} for respondent ${respondent.id}`,
+    );
 
     await promisify(session.save).call(session);
 
@@ -50,7 +54,9 @@ export class PublicService {
     study: Study,
     session: Session & Partial<SessionData>,
   ) {
-    const run = session.runs.get(study.token);
+    this.logger.debug(`Getting next task for study ${study.token}`);
+
+    const run = session.runs?.[study.token];
     if (!run) {
       throw new BadRequestException('You have not started this study');
     }
@@ -81,18 +87,16 @@ export class PublicService {
     const currentTask = tasks[0];
     run.currentTaskId = currentTask.id;
 
-    const taskResponse = em.create(TaskResponse, {
-      respondent: {
-        id: run.respondentId,
-      },
-      task: {
-        id: run.currentTaskId,
-      },
+    await em.upsert(TaskResponse, {
+      respondent: em.getReference(Respondent, run.respondentId),
+      task: em.getReference(Task, run.currentTaskId),
     });
 
-    em.persist(taskResponse);
-
     await promisify(session.save).call(session);
+
+    this.logger.debug(
+      `Started task ${currentTask.id} for respondent ${run.respondentId}`,
+    );
 
     return currentTask;
   }
@@ -102,7 +106,7 @@ export class PublicService {
     study: Study,
     session: Session & Partial<SessionData>,
   ) {
-    const run = session.runs.get(study.token);
+    const run = session.runs?.[study.token];
     if (!run) {
       throw new BadRequestException('You have not started this study');
     }
@@ -112,6 +116,7 @@ export class PublicService {
     }
 
     // TODO: write task response, check if skipped
+
     const taskResponse = await em.findOne(TaskResponse, {
       respondent: {
         id: run.respondentId,
@@ -128,7 +133,11 @@ export class PublicService {
 
     await promisify(session.save).call(session);
 
-    return true;
+    this.logger.debug(
+      `Finished task ${taskResponse.task.id} for respondent ${taskResponse.respondent.id}`,
+    );
+
+    return { success: true };
   }
 
   async finishRun(
@@ -136,7 +145,7 @@ export class PublicService {
     study: Study,
     session: Session & Partial<SessionData>,
   ) {
-    const run = session.runs.get(study.token);
+    const run = session.runs?.[study.token];
 
     if (!run) {
       throw new BadRequestException('You have not started this study');
@@ -146,16 +155,25 @@ export class PublicService {
       throw new BadRequestException('You have not finished the current task');
     }
 
-    await em.upsert(Respondent, {
+    const respondent = await em.findOne(Respondent, {
       id: run.respondentId,
-      finishedAt: new Date(),
     });
+
+    respondent.finishedAt ??= new Date();
+    em.persist(respondent);
 
     run.tasksDone.push(run.currentTaskId);
     run.currentTaskId = undefined;
 
+    this.logger.debug(
+      `Finished study ${study.token} for respondent ${respondent.id}`,
+    );
+    // clear session if development
+    if (process.env.NODE_ENV !== 'production') {
+      session.runs = undefined;
+    }
     await promisify(session.save).call(session);
 
-    return true;
+    return { success: true };
   }
 }
