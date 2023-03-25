@@ -30,6 +30,7 @@ export abstract class IoBaseGateway
    * Resolve guards attached through @UseIoGuard() decorator.
    */
   private resolveGuards(): IoCanActivate[] {
+    // eslint-disable-next-line @typescript-eslint/ban-types
     const metatypes: (IoCanActivate | Function)[] =
       Reflect.getMetadata(IO_GUARDS_METADATA, this.constructor) || [];
     return metatypes
