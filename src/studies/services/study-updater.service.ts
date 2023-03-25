@@ -88,6 +88,7 @@ export class StudyUpdaterService {
         study.postStudyQuestionnaire = null;
         em.remove(study.postStudyQuestionnaire);
       }
+      em.remove(em.getReference(Questionnaire, dto.id));
     } else if (dto.resource === StudyRemoveResource.QUESTION) {
       const questionnaires = [
         study.preStudyQuestionnaire.$,
@@ -96,6 +97,18 @@ export class StudyUpdaterService {
       for (const questionnaire of questionnaires) {
         questionnaire.questions.remove(em.getReference(Question, dto.id));
       }
+      em.remove(em.getReference(Question, dto.id));
+    } else if (dto.resource === StudyRemoveResource.OPTION) {
+      const questionnaires = [
+        study.preStudyQuestionnaire.$,
+        study.postStudyQuestionnaire.$,
+      ];
+      for (const questionnaire of questionnaires) {
+        for (const question of questionnaire.questions) {
+          question.options.remove(em.getReference(Option, dto.id));
+        }
+      }
+      em.remove(em.getReference(Option, dto.id));
     }
   }
 

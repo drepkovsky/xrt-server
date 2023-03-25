@@ -18,7 +18,7 @@ export class Option extends XrBaseEntity<Option> {
   @MinLength(1)
   @MaxLength(255)
   @IsOptional({ groups: [CRUDGroup.UPDATE] })
-  text!: string;
+  text = '';
 
   @ManyToOne(() => Question, { ref: true })
   question!: Ref<Question>;
