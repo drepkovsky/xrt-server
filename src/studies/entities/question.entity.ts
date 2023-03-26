@@ -21,10 +21,7 @@ import { Option } from '#app/studies/entities/option.entity';
 import { Type } from 'class-transformer';
 
 export enum QuestionType {
-  SINGLE_LINE = 'single-line',
-  MULTI_LINE = 'multi-line',
-  NUMBER = 'number',
-  RADIO = 'radio',
+  TEXT = 'text',
   CHECKBOX = 'checkbox',
   SELECT = 'select',
 }

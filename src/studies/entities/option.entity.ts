@@ -3,6 +3,7 @@ import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
 import {
   Collection,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   Property,
@@ -23,6 +24,6 @@ export class Option extends XrBaseEntity<Option> {
   @ManyToOne(() => Question, { ref: true })
   question!: Ref<Question>;
 
-  @OneToMany(() => Answer, (a) => a.option)
+  @ManyToMany(() => Answer, (a) => a.options)
   answers: Collection<Answer> = new Collection<Answer>(this);
 }

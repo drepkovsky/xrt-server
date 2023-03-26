@@ -150,7 +150,7 @@ export class StudyUpdaterService {
     } else if (dto.resource === StudyAddResource.QUESTION) {
       const question = em.create(Question, {
         text: '',
-        type: QuestionType.SINGLE_LINE,
+        type: QuestionType.TEXT,
       });
       em.persist(question);
       if (dto.questionnaireId === study.preStudyQuestionnaire.id) {
