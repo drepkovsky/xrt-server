@@ -1,10 +1,11 @@
 import { PublicStudy } from '#app/public/decorators/public-study.decorator';
 import { UsePublicStudy } from '#app/public/decorators/use-public-study.decorator';
+import { AnswerDto } from '#app/public/dto/answer.dto';
 import { PublicService } from '#app/public/public.service';
 import { Task } from '#app/studies/entities/task.entity';
 import { MikroORM } from '@mikro-orm/core';
 import { Controller, Get, Req } from '@nestjs/common';
-import { Post } from '@nestjs/common/decorators/index.js';
+import { Body, Post } from '@nestjs/common/decorators/index.js';
 import { Request } from 'express';
 import { Study } from '../studies/entities/study.entity.js';
 
@@ -49,6 +50,17 @@ export class PublicController {
   finishRun(@Req() req: Request, @PublicStudy() study: Study) {
     return this.orm.em.transactional(async (em) => {
       return this.publicService.finishRun(em, study, req.session);
+    });
+  }
+
+  @Post('answer')
+  answerQuestion(
+    @Req() req: Request,
+    @Body() dto: AnswerDto,
+    @PublicStudy() study: Study,
+  ) {
+    return this.orm.em.transactional(async (em) => {
+      return this.publicService.answerQuestion(em, study, req.session, dto);
     });
   }
 }

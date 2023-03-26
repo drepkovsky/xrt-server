@@ -27,5 +27,5 @@ export class Answer extends XrBaseEntity<Answer> {
   options?: Collection<Option> = new Collection<Option>(this);
 
   @ManyToOne(() => Respondent)
-  respondent?: Respondent;
+  respondent?: Ref<Respondent>;
 }

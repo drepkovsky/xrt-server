@@ -1,3 +1,7 @@
+import { AnswerDto } from '#app/public/dto/answer.dto';
+import { Answer } from '#app/studies/entities/answer.entity';
+import { Option } from '#app/studies/entities/option.entity';
+import { Question } from '#app/studies/entities/question.entity';
 import { Respondent } from '#app/studies/entities/respondents.entity';
 import { Study } from '#app/studies/entities/study.entity';
 import { TaskResponse } from '#app/studies/entities/task-response.entity';
@@ -173,6 +177,39 @@ export class PublicService {
       session.runs = undefined;
     }
     await promisify(session.save).call(session);
+
+    return { success: true };
+  }
+
+  async answerQuestion(
+    em: EntityManager,
+    study: Study,
+    session: Session & Partial<SessionData>,
+    dto: AnswerDto,
+  ) {
+    const run = session.runs?.[study.token];
+    if (!run) {
+      throw new BadRequestException('You have not started this study');
+    }
+
+    if (!run.currentTaskId) {
+      throw new BadRequestException('You have not started any task');
+    }
+
+    const answer = new Answer();
+
+    answer.respondent = em.getReference(Respondent, run.respondentId, {
+      wrapped: true,
+    });
+    answer.question = em.getReference(Question, dto.questionId, {
+      wrapped: true,
+    });
+    answer.text = dto.text;
+    for (const id of dto.optionIds) {
+      answer.options.add(em.getReference(Option, id));
+    }
+
+    await em.persistAndFlush(answer);
 
     return { success: true };
   }
