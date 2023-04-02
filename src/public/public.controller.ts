@@ -72,7 +72,7 @@ export class PublicController {
     });
   }
 
-  @Post('recording/:token')
+  @Post('recording/:recordingToken')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -82,10 +82,13 @@ export class PublicController {
           cb(null, `${token}.${file.mimetype.split('/')[1]}}`);
         },
       }),
+      limits: {
+        fileSize: 50000000,
+      },
     }),
   )
   uploadFile(
-    @Param('token') token: string,
+    @Param('recordingToken') token: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
     return this.orm.em.transactional(async (em) => {

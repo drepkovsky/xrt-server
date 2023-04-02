@@ -29,11 +29,14 @@ export class PublicService {
     session: Session & Partial<SessionData>,
   ) {
     if (session.runs && session.runs[study.token]) {
+      const recordings = await em.find(Recording, {
+        respondent: {
+          id: session.runs[study.token].respondentId,
+        },
+      });
+
       // study is already running we don't want to start it again
-      return {
-        success: true,
-        message: 'Study is already running, you can continue',
-      };
+      return this.getRespondentRecordings(recordings);
     }
 
     // TODO
@@ -41,11 +44,6 @@ export class PublicService {
       study: em.getReference(Study, study.id),
     });
     await em.persistAndFlush(respondent);
-
-    const recordings = this.recordingService.createForRespondent(
-      em,
-      wrap(respondent).toReference(),
-    );
 
     session.runs = session.runs || {};
     session.runs[study.token] = {
@@ -60,16 +58,12 @@ export class PublicService {
 
     await promisify(session.save).call(session);
 
-    const recMap = recordings.reduce((acc, recording) => {
-      acc[recording.type] = recording;
-      return acc;
-    }, {} as Record<RecordingType, Recording>);
+    const recordings = this.recordingService.createForRespondent(
+      em,
+      wrap(respondent).toReference(),
+    );
 
-    return {
-      microphone: recMap[RecordingType.MICROPHONE].token,
-      audio: recMap[RecordingType.AUDIO].token,
-      screen: recMap[RecordingType.SCREEN].token,
-    };
+    return this.getRespondentRecordings(recordings);
   }
 
   async getNextTask(
@@ -254,5 +248,18 @@ export class PublicService {
     await this.recordingService.addToQueue(jobData);
 
     return { success: true };
+  }
+
+  private getRespondentRecordings(recordings: Recording[]) {
+    const recMap = recordings.reduce((acc, recording) => {
+      acc[recording.type] = recording;
+      return acc;
+    }, {} as Record<RecordingType, Recording>);
+
+    return {
+      microphone: recMap[RecordingType.MICROPHONE].token,
+      audio: recMap[RecordingType.AUDIO].token,
+      screen: recMap[RecordingType.SCREEN].token,
+    };
   }
 }

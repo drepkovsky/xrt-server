@@ -12,6 +12,7 @@ import { RecordingModule } from '#app/recording/recording.module';
 import { StudyModule } from '#app/studies/study.module';
 import { UsersModule } from '#app/users/users.module';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { BullModule } from '@nestjs/bull';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
@@ -43,6 +44,11 @@ import { LoggerModule } from 'nestjs-pino';
     }),
     MulterModule.register({
       dest: './upload',
+    }),
+    BullModule.forRootAsync({
+      useFactory: (configService) => configService.get(ConfigKey.QUEUE),
+      inject: [ConfigService],
+      imports: [ConfigModule],
     }),
     GlobalModule,
     AuthModule,
