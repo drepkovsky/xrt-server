@@ -1,4 +1,10 @@
 import { AnswerDto } from '#app/public/dto/answer.dto';
+import {
+  Recording,
+  RecordingType,
+} from '#app/recording/entities/recording.entity';
+import { RecordingService } from '#app/recording/recording.service';
+import { RecordingJobProcessPayload } from '#app/recording/recording.types';
 import { Answer } from '#app/studies/entities/answer.entity';
 import { Option } from '#app/studies/entities/option.entity';
 import { Question } from '#app/studies/entities/question.entity';
@@ -6,7 +12,7 @@ import { Respondent } from '#app/studies/entities/respondents.entity';
 import { Study } from '#app/studies/entities/study.entity';
 import { TaskResponse } from '#app/studies/entities/task-response.entity';
 import { Task } from '#app/studies/entities/task.entity';
-import { EntityManager } from '@mikro-orm/core';
+import { EntityManager, wrap } from '@mikro-orm/core';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { Session, SessionData } from 'express-session';
 import { promisify } from 'util';
@@ -14,6 +20,8 @@ import { promisify } from 'util';
 @Injectable()
 export class PublicService {
   logger = new Logger(PublicService.name);
+
+  constructor(private readonly recordingService: RecordingService) {}
 
   async startRun(
     em: EntityManager,
@@ -34,6 +42,11 @@ export class PublicService {
     });
     await em.persistAndFlush(respondent);
 
+    const recordings = this.recordingService.createForRespondent(
+      em,
+      wrap(respondent).toReference(),
+    );
+
     session.runs = session.runs || {};
     session.runs[study.token] = {
       respondentId: respondent.id,
@@ -47,9 +60,15 @@ export class PublicService {
 
     await promisify(session.save).call(session);
 
+    const recMap = recordings.reduce((acc, recording) => {
+      acc[recording.type] = recording;
+      return acc;
+    }, {} as Record<RecordingType, Recording>);
+
     return {
-      success: true,
-      message: 'Study started',
+      microphone: recMap[RecordingType.MICROPHONE].token,
+      audio: recMap[RecordingType.AUDIO].token,
+      screen: recMap[RecordingType.SCREEN].token,
     };
   }
 
@@ -210,6 +229,29 @@ export class PublicService {
     }
 
     await em.persistAndFlush(answer);
+
+    return { success: true };
+  }
+
+  async processRecording(
+    em: EntityManager,
+    token: string,
+    file: Express.Multer.File,
+  ) {
+    const recording = await em.findOne(Recording, { token });
+
+    if (!recording) {
+      throw new BadRequestException('Invalid token');
+    }
+
+    const jobData: RecordingJobProcessPayload = {
+      type: recording.type,
+      token: token,
+      location: file.path,
+    };
+
+    // save to storage with timestamp_token, send location to recording processor to process zip file, create video from images
+    await this.recordingService.addToQueue(jobData);
 
     return { success: true };
   }

@@ -5,8 +5,16 @@ import { PublicService } from '#app/public/public.service';
 import { Task } from '#app/studies/entities/task.entity';
 import { MikroORM } from '@mikro-orm/core';
 import { Controller, Get, Req } from '@nestjs/common';
-import { Body, Post } from '@nestjs/common/decorators/index.js';
+import {
+  Body,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common/decorators/index.js';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
+import { diskStorage } from 'multer';
 import { Study } from '../studies/entities/study.entity.js';
 
 @UsePublicStudy()
@@ -61,6 +69,27 @@ export class PublicController {
   ) {
     return this.orm.em.transactional(async (em) => {
       return this.publicService.answerQuestion(em, study, req.session, dto);
+    });
+  }
+
+  @Post('recording/:token')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/recordings',
+        filename: (req, file, cb) => {
+          const token = req.params.token;
+          cb(null, `${token}.${file.mimetype.split('/')[1]}}`);
+        },
+      }),
+    }),
+  )
+  uploadFile(
+    @Param('token') token: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.orm.em.transactional(async (em) => {
+      return this.publicService.processRecording(em, token, file);
     });
   }
 }

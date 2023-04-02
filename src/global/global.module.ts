@@ -1,4 +1,5 @@
 import { ConfigKey } from '#app/config/config.types';
+import { FfmpegModule } from '#app/global/ffmpeg/ffmpeg.module';
 import { RedisModule } from '#app/global/redis/redis.module';
 import { Module } from '@nestjs/common/decorators/index.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -11,7 +12,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         configService.get(ConfigKey.REDIS),
       imports: [ConfigModule],
     }),
+    FfmpegModule,
   ],
-  exports: [RedisModule],
+  exports: [RedisModule, FfmpegModule],
 })
 export class GlobalModule {}

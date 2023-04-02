@@ -30,4 +30,9 @@ export class XrBaseEntity<E extends { id: string }> extends BaseEntity<
   softRemove(): void {
     this.deletedAt = new Date();
   }
+
+  constructor(data: Partial<E> = {}) {
+    super();
+    Object.assign(this, data);
+  }
 }

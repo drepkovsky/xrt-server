@@ -8,12 +8,14 @@ import { GlobalModule } from '#app/global/global.module';
 import { XrValidationPipe } from '#app/global/pipe/xr-validation.pipe';
 import { RedisService } from '#app/global/redis/redis.service';
 import { PublicModule } from '#app/public/public.module';
+import { RecordingModule } from '#app/recording/recording.module';
 import { StudyModule } from '#app/studies/study.module';
 import { UsersModule } from '#app/users/users.module';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
+import { MulterModule } from '@nestjs/platform-express';
 import RedisStore from 'connect-redis';
 import expressSession from 'express-session';
 import { LoggerModule } from 'nestjs-pino';
@@ -39,11 +41,15 @@ import { LoggerModule } from 'nestjs-pino';
         ...configService.get<OrmConfig>(ConfigKey.ORM),
       }),
     }),
+    MulterModule.register({
+      dest: './upload',
+    }),
     GlobalModule,
     AuthModule,
     StudyModule,
     UsersModule,
     PublicModule,
+    RecordingModule,
   ],
   providers: [
     {
