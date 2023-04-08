@@ -245,18 +245,18 @@ export class PublicService {
   ) {
     const recording = await em.findOne(Recording, { token });
 
-    if (!recording) {
-      throw new BadRequestException('Invalid token');
-    }
+    // if (!recording) {
+    //   throw new BadRequestException('Invalid token');
+    // }
 
-    const jobData: RecordingJobProcessPayload = {
-      type: recording.type,
-      token: token,
-      location: file.path,
-    };
+    // const jobData: RecordingJobProcessPayload = {
+    //   type: recording.type,
+    //   token: token,
+    //   location: file.path,
+    // };
 
-    // save to storage with timestamp_token, send location to recording processor to process zip file, create video from images
-    await this.recordingService.addToQueue(jobData);
+    // // save to storage with timestamp_token, send location to recording processor to process zip file, create video from images
+    // await this.recordingService.addToQueue(jobData);
 
     return { success: true };
   }
