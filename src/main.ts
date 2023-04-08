@@ -4,7 +4,6 @@ import { ConfigKey } from '#app/config/config.types';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { Logger } from 'nestjs-pino';
-import { LoggerErrorInterceptor } from 'nestjs-pino/LoggerErrorInterceptor.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -14,14 +13,16 @@ async function bootstrap() {
   const logger = app.get(Logger);
 
   app.useLogger(logger);
-  app.useGlobalInterceptors(new LoggerErrorInterceptor());
 
   const configService: ConfigService = app.get(ConfigService);
 
   const appConfig = configService.get<AppConfig>(ConfigKey.APP);
 
-  await app.listen(appConfig.port).then(() => {
-    logger.log(`Listening on port ${appConfig.port}`, 'NestApplication');
+  await app.listen(appConfig.port).then(async () => {
+    // print port app is running on
+    const url = await app.getUrl();
+    const port = url.split(':').at(-1);
+    logger.log(`Listening on port ${port}`, 'NestApplication');
   });
 }
 bootstrap();

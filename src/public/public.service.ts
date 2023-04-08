@@ -30,10 +30,11 @@ export class PublicService {
   ) {
     if (session.runs && session.runs[study.token]) {
       // study is already running we don't want to start it again
-      return {
-        success: true,
-        message: 'Study is already running, you can continue',
-      };
+
+      const recordings = await em.find(Recording, {
+        respondent: session.runs[study.token].respondentId,
+      });
+      return this.getRecordingsResponse(recordings);
     }
 
     // TODO
@@ -41,11 +42,6 @@ export class PublicService {
       study: em.getReference(Study, study.id),
     });
     await em.persistAndFlush(respondent);
-
-    const recordings = this.recordingService.createForRespondent(
-      em,
-      wrap(respondent).toReference(),
-    );
 
     session.runs = session.runs || {};
     session.runs[study.token] = {
@@ -60,6 +56,15 @@ export class PublicService {
 
     await promisify(session.save).call(session);
 
+    const recordings = this.recordingService.createForRespondent(
+      em,
+      wrap(respondent).toReference(),
+    );
+
+    return this.getRecordingsResponse(recordings);
+  }
+
+  private getRecordingsResponse(recordings: Recording[]) {
     const recMap = recordings.reduce((acc, recording) => {
       acc[recording.type] = recording;
       return acc;
