@@ -94,17 +94,9 @@ export class StudyService {
       'postStudyQuestionnaire.questions.options',
     ]);
 
-    if (dto.update) {
-      this.studyUpdaterService.handleUpdate(em, study, dto.update);
-    }
-
-    if (dto.remove) {
-      this.studyUpdaterService.handleRemove(em, study, dto.remove);
-    }
-
-    if (dto.add) {
-      this.studyUpdaterService.handleAdd(em, study, dto.add);
-    }
+    dto.update && this.studyUpdaterService.handleUpdate(study, dto.update);
+    dto.remove && this.studyUpdaterService.handleRemove(em, study, dto.remove);
+    dto.add && this.studyUpdaterService.handleAdd(em, study, dto.add);
 
     return em.persistAndFlush(study).then(() => study);
   }
@@ -120,8 +112,8 @@ export class StudyService {
       task.softRemove();
     }
     for (const questionnaire of [
-      study.preStudyQuestionnaire.$,
-      study.postStudyQuestionnaire.$,
+      study.preStudyQuestionnaire?.$,
+      study.postStudyQuestionnaire?.$,
     ]) {
       questionnaire.softRemove();
     }
