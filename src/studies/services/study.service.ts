@@ -1,9 +1,13 @@
 import { UpdateStudyDto } from '#app/studies/dto/study.dto';
-import { Study } from '#app/studies/entities/study.entity';
+import { Study, StudyStatus } from '#app/studies/entities/study.entity';
 import { StudyUpdaterService } from '#app/studies/services/study-updater.service';
 import { User } from '#app/users/entities/user.entity';
 import { EntityManager, Loaded, Populate } from '@mikro-orm/core';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { nanoid } from 'nanoid';
 
 @Injectable()
@@ -94,6 +98,11 @@ export class StudyService {
       'postStudyQuestionnaire.questions.options',
     ]);
 
+    if (study.status !== StudyStatus.DRAFT)
+      throw new BadRequestException(
+        'Cannot update a study that is not in draft mode',
+      );
+
     dto.update && this.studyUpdaterService.handleUpdate(study, dto.update);
     dto.remove && this.studyUpdaterService.handleRemove(em, study, dto.remove);
     dto.add && this.studyUpdaterService.handleAdd(em, study, dto.add);
@@ -118,6 +127,13 @@ export class StudyService {
       questionnaire.softRemove();
     }
 
+    await em.persistAndFlush(study);
+    return study;
+  }
+
+  async launch(em: EntityManager, id: string, user: User) {
+    const study = await this.findOne(em, id, user);
+    study.status = StudyStatus.ACTIVE;
     await em.persistAndFlush(study);
     return study;
   }

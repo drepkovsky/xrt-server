@@ -46,6 +46,13 @@ export class StudyGateway extends IoBaseGateway {
     });
   }
 
+  @SubscribeMessage('launch')
+  async launch(@UserParam() user: User, @MessageBody('id') id: string) {
+    return this.orm.em.transactional(async (em) => {
+      return this.studyService.launch(em, id, user);
+    });
+  }
+
   @SubscribeMessage('remove')
   async remove(@UserParam() user: User, @MessageBody('id') id: string) {
     return this.orm.em.transactional(async (em) => {
