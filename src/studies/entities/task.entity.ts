@@ -53,19 +53,16 @@ export class Task extends XrBaseEntity<Task> {
   @Property()
   @Min(0)
   @IsOptional({ groups: [CRUDGroup.UPDATE] })
-  order: number = 0;
+  order = 0;
 
   @Property()
   @MaxLength(500)
   @MinLength(1)
   @IsOptional({ groups: [CRUDGroup.UPDATE] })
-  text: string = '';
+  text = '';
 
   @ManyToOne(() => Study, { ref: true })
   study!: Ref<Study>;
-
-  @Property()
-  isRequired: boolean = false;
 
   @OneToMany(() => TaskResponse, (r) => r.task)
   responses: Collection<TaskResponse> = new Collection<TaskResponse>(this);

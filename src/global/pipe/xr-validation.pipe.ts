@@ -19,7 +19,9 @@ export class XrValidationPipe implements PipeTransform {
         : value;
 
     const groups =
-      Reflect.getMetadata(VALIDATION_GROUP_METADATA, instance) || [];
+      typeof instance !== 'object' || typeof instance !== 'function'
+        ? []
+        : Reflect.getMetadata(VALIDATION_GROUP_METADATA, instance) || [];
 
     const validationPipe = new ValidationPipe({
       ...this.options,

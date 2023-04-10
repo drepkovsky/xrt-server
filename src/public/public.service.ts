@@ -4,7 +4,6 @@ import {
   RecordingType,
 } from '#app/recording/entities/recording.entity';
 import { RecordingService } from '#app/recording/recording.service';
-import { RecordingJobProcessPayload } from '#app/recording/recording.types';
 import { Answer } from '#app/studies/entities/answer.entity';
 import { Option } from '#app/studies/entities/option.entity';
 import { Question } from '#app/studies/entities/question.entity';
@@ -29,13 +28,11 @@ export class PublicService {
     session: Session & Partial<SessionData>,
   ) {
     if (session.runs && session.runs[study.token]) {
-      const recordings = await em.find(Recording, {
-        respondent: {
-          id: session.runs[study.token].respondentId,
-        },
-      });
-
       // study is already running we don't want to start it again
+
+      const recordings = await em.find(Recording, {
+        respondent: session.runs[study.token].respondentId,
+      });
       return this.getRespondentRecordings(recordings);
     }
 
@@ -234,18 +231,18 @@ export class PublicService {
   ) {
     const recording = await em.findOne(Recording, { token });
 
-    if (!recording) {
-      throw new BadRequestException('Invalid token');
-    }
+    // if (!recording) {
+    //   throw new BadRequestException('Invalid token');
+    // }
 
-    const jobData: RecordingJobProcessPayload = {
-      type: recording.type,
-      token: token,
-      location: file.path,
-    };
+    // const jobData: RecordingJobProcessPayload = {
+    //   type: recording.type,
+    //   token: token,
+    //   location: file.path,
+    // };
 
-    // save to storage with timestamp_token, send location to recording processor to process zip file, create video from images
-    await this.recordingService.addToQueue(jobData);
+    // // save to storage with timestamp_token, send location to recording processor to process zip file, create video from images
+    // await this.recordingService.addToQueue(jobData);
 
     return { success: true };
   }

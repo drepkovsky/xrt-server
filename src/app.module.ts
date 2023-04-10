@@ -20,6 +20,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import RedisStore from 'connect-redis';
 import expressSession from 'express-session';
 import { LoggerModule } from 'nestjs-pino';
+import { QueueConfig } from './config/queue.config.js';
 
 @Module({
   imports: [
@@ -46,9 +47,11 @@ import { LoggerModule } from 'nestjs-pino';
       dest: './upload',
     }),
     BullModule.forRootAsync({
-      useFactory: (configService) => configService.get(ConfigKey.QUEUE),
-      inject: [ConfigService],
       imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        ...configService.getOrThrow<QueueConfig>(ConfigKey.QUEUE),
+      }),
     }),
     GlobalModule,
     AuthModule,
