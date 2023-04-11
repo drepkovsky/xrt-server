@@ -137,8 +137,4 @@ export class StudyService {
     await em.persistAndFlush(study);
     return study;
   }
-
-  async getResults(em: EntityManager, id: string, user: User) {
-    const study = await this.findOne(em, id, user, ['tasks', 'respondents']);
-  }
 }

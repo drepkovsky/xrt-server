@@ -25,7 +25,7 @@ export class RecordingService {
     private readonly configService: ConfigService,
   ) {}
 
-  getUrl(recording: Recording) {
+  async getUrl(recording: Recording): Promise<string> {
     const disk = this.storageService.getDisk();
 
     const appConfig = this.configService.get<AppConfig>(ConfigKey.APP);
@@ -34,7 +34,7 @@ export class RecordingService {
       return `${appConfig.baseUrl}/storage/${recording.location}`;
     }
 
-    return disk.getSignedUrl(recording.location);
+    return (await disk.getSignedUrl(recording.location)).signedUrl;
   }
 
   createForRespondent(em: EntityManager, respondent: Ref<Respondent>) {
