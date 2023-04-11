@@ -1,6 +1,7 @@
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
 import { CRUDGroup } from '#app/global/types/common.types';
 import { Questionnaire } from '#app/studies/entities/questionnaire.entity';
+import { Respondent } from '#app/studies/entities/respondents.entity';
 import { Task } from '#app/studies/entities/task.entity';
 import { User } from '#app/users/entities/user.entity';
 import {
@@ -55,6 +56,9 @@ export class Study extends XrBaseEntity<Study> {
 
   @OneToMany(() => Task, 'study')
   tasks: Collection<Task> = new Collection<Task>(this);
+
+  @OneToMany(() => Respondent, (r) => r.study)
+  respondents: Collection<Respondent> = new Collection<Respondent>(this);
 
   @ManyToOne(() => Questionnaire, { nullable: true, ref: true })
   @ValidateNested({ groups: [CRUDGroup.UPDATE] })

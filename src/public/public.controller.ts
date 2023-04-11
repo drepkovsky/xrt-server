@@ -1,6 +1,7 @@
 import { PublicStudy } from '#app/public/decorators/public-study.decorator';
 import { UsePublicStudy } from '#app/public/decorators/use-public-study.decorator';
 import { AnswerDto } from '#app/public/dto/answer.dto';
+import { RecordingFileInterceptor } from '#app/public/interceptors/recording-file.interceptor';
 import { PublicService } from '#app/public/public.service';
 import { Task } from '#app/studies/entities/task.entity';
 import { MikroORM } from '@mikro-orm/core';
@@ -12,9 +13,7 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common/decorators/index.js';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
-import { diskStorage } from 'multer';
 import { Study } from '../studies/entities/study.entity.js';
 
 @UsePublicStudy()
@@ -73,20 +72,7 @@ export class PublicController {
   }
 
   @Post('recording/:recording')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads/recordings',
-        filename: (req, file, cb) => {
-          const token = req.params.recording;
-          cb(null, `${token}.${file.mimetype.split('/')[1]}`);
-        },
-      }),
-      limits: {
-        fileSize: 50000000,
-      },
-    }),
-  )
+  @UseInterceptors(RecordingFileInterceptor)
   uploadFile(
     @Param('recording') token: string,
     @UploadedFile() file: Express.Multer.File,
