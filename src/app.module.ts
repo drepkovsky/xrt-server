@@ -24,6 +24,7 @@ import RedisStore from 'connect-redis';
 import expressSession from 'express-session';
 import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';
+import { fileURLToPath } from 'url';
 import { QueueConfig } from './config/queue.config.js';
 
 @Module({
@@ -55,7 +56,7 @@ import { QueueConfig } from './config/queue.config.js';
       }),
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(import.meta.url, '..', 'storage'),
+      rootPath: fileURLToPath(join(import.meta.url, '..', '..', 'storage')),
       serveRoot: '/storage',
     }),
     MulterModule.register(),
