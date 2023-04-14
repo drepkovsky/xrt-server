@@ -23,8 +23,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import RedisStore from 'connect-redis';
 import expressSession from 'express-session';
 import { LoggerModule } from 'nestjs-pino';
-import { join } from 'path';
-import { fileURLToPath } from 'url';
+import { join } from 'node:path';
 import { QueueConfig } from './config/queue.config.js';
 
 @Module({
@@ -56,7 +55,7 @@ import { QueueConfig } from './config/queue.config.js';
       }),
     }),
     ServeStaticModule.forRoot({
-      rootPath: fileURLToPath(join(import.meta.url, '..', '..', 'storage')),
+      rootPath: join(process.cwd(), 'storage'),
       serveRoot: '/storage',
     }),
     MulterModule.register(),
@@ -94,7 +93,7 @@ export class AppModule {
     const client = this.redisService.getClient(RedisClient.SESSION);
     const redisStore = new RedisStore({ client });
 
-    console.log(fileURLToPath(join(import.meta.url, '..', 'storage')));
+    console.log(join(process.cwd(), 'storage'));
 
     consumer
       .apply(
