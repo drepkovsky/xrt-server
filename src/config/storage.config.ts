@@ -1,5 +1,6 @@
 import { ConfigKey } from '#app/config/config.types';
 import {
+  DiskLocalConfigType,
   DiskS3ConfigType,
   DriverType,
   StorageModuleOptions,
@@ -12,8 +13,14 @@ export default registerAs(
   ConfigKey.STORAGE,
   (): StorageConfig =>
     ({
-      default: DriverType.S3,
+      default: process.env.DEFAULT_STORAGE || DriverType.LOCAL,
       disks: {
+        [DriverType.LOCAL]: {
+          driver: DriverType.LOCAL,
+          config: {
+            root: process.cwd() + '/storage',
+          } satisfies DiskLocalConfigType,
+        },
         [DriverType.S3]: {
           driver: DriverType.S3,
           config: {
