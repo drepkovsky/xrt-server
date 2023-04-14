@@ -183,9 +183,9 @@ export class PublicService {
       `Finished study ${study.token} for respondent ${respondent.id}`,
     );
     // clear session if development
-    if (process.env.NODE_ENV !== 'production') {
-      session.runs = undefined;
-    }
+    // if (process.env.NODE_ENV !== 'production') {
+    session.runs = undefined;
+    // }
     await promisify(session.save).call(session);
 
     return { success: true };
