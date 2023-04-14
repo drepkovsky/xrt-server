@@ -112,7 +112,7 @@
     "useTsNode": true,
     "configPaths": [
       "./dist/db/orm.config.js",
-      "./src/db/orm.config.ts",
+      "./src/db/orm.config.ts"
     ]
   },
   "imports": {
