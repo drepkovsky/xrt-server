@@ -94,6 +94,8 @@ export class AppModule {
     const client = this.redisService.getClient(RedisClient.SESSION);
     const redisStore = new RedisStore({ client });
 
+    console.log(fileURLToPath(join(import.meta.url, '..', 'storage')));
+
     consumer
       .apply(
         expressSession({
