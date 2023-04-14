@@ -70,18 +70,18 @@ export class RecordingProcessor {
   }
   @OnQueueCompleted()
   onComplete(job: Job, result: any) {
-    this.logger.debug(`Completed job ${job.id} of type ${job.name}`);
+    this.logger.debug(`Completed job ${job.id} of type ${job?.name}`);
   }
   @OnQueueFailed()
   onFailed(job: Job, error: Error) {
     this.logger.error(
-      `Failed job ${job.id} of type ${job.name}: ${error.message}`,
+      `Failed job ${job.id} of type ${job.name}: ${error?.message}`,
     );
   }
   @OnQueueError()
   onError(job: Job, error: Error) {
     this.logger.error(
-      `Error in job ${job.id} of type ${job.name}: ${error.message}`,
+      `Error in job ${job.id} of type ${job.name}: ${error?.message}`,
     );
   }
 }

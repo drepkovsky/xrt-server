@@ -1,6 +1,5 @@
 import { ConfigKey } from '#app/config/config.types';
 import {
-  DiskLocalConfigType,
   DiskS3ConfigType,
   DriverType,
   StorageModuleOptions,
@@ -8,27 +7,22 @@ import {
 import { registerAs } from '@nestjs/config';
 
 export type StorageConfig = StorageModuleOptions;
-export enum StorageDisk {
-  LOCAL = 'local',
-}
-
-export type S3DiskConfig = DiskS3ConfigType & {
-  cloudFrontUrl: string;
-  cloudFrontKeyPairId: string;
-  cloudFrontPrivateKey: string;
-};
 
 export default registerAs(
   ConfigKey.STORAGE,
   (): StorageConfig =>
     ({
-      default: StorageDisk.LOCAL,
+      default: DriverType.S3,
       disks: {
-        [StorageDisk.LOCAL]: {
-          driver: DriverType.LOCAL,
+        [DriverType.S3]: {
+          driver: DriverType.S3,
           config: {
-            root: process.cwd() + '/storage',
-          } satisfies DiskLocalConfigType,
+            bucket: process.env.S3_BUCKET,
+            region: process.env.S3_REGION,
+            endpoint: process.env.S3_ENDPOINT,
+            key: process.env.S3_ACCESS_KEY_ID,
+            secret: process.env.S3_ACCESS_KEY_SECRET,
+          } satisfies DiskS3ConfigType,
         },
       },
     } satisfies StorageConfig),
