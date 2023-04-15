@@ -1,6 +1,7 @@
 import { UserParam } from '#app/auth/decorators/user-param.decorator';
 import { JwtAuthIoGuard } from '#app/auth/guards/jwt-auth.ioguard';
 import { IoGateway } from '#app/global/decorators/io-gateway.decorator';
+import { IoParam } from '#app/global/decorators/io-param.decorator';
 import { UseIoGuard } from '#app/global/decorators/use-io-guard.decorator';
 import { IoBaseGateway } from '#app/global/gateway/io-base.gateway';
 import { ResultsService } from '#app/studies/services/results.service';
@@ -9,7 +10,7 @@ import { MessageBody, SubscribeMessage } from '@nestjs/websockets';
 
 @UseIoGuard(JwtAuthIoGuard)
 @IoGateway({
-  namespace: 'study-results',
+  namespace: 'study/:id/results',
   transports: ['websocket'],
 })
 export class ResultsGateway extends IoBaseGateway {
@@ -18,7 +19,11 @@ export class ResultsGateway extends IoBaseGateway {
   }
 
   @SubscribeMessage('respondents')
-  async getRespondents(@UserParam() user: User, @MessageBody('id') id: string) {
+  async getRespondents(
+    @UserParam() user: User,
+    @IoParam('id') studyId: string,
+    @MessageBody('id') id: string,
+  ) {
     return this.orm.em.transactional(async (em) => {
       return this.resultsService.getRespondents(em, id, user);
     });
