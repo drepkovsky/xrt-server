@@ -1,27 +1,26 @@
-import { RecordingType } from '#app/recording/entities/recording.entity';
 import { RecordingService } from '#app/recording/recording.service';
 import { RespondentStatus } from '#app/studies/entities/respondents.entity';
 import { Study } from '#app/studies/entities/study.entity';
-import { StudyService } from '#app/studies/services/study.service';
 import {
   ResolvedRespondent,
   RespondentResults,
-  RespondentsStatistics,
+  RespondentsStatistics as RespondentStatistics,
+  StudyResults,
 } from '#app/studies/types/results.types';
 import { User } from '#app/users/entities/user.entity';
-import { EntityManager } from '@mikro-orm/core';
+import { EntityManager, Loaded } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ResultsService {
-  constructor(
-    private readonly studyService: StudyService,
-    private readonly recordingService: RecordingService,
-  ) {}
+  constructor(private readonly recordingService: RecordingService) {}
 
-  async getRespondents(em: EntityManager, studyId: string, user: User) {
-    // TODO: add pagination
-    const respondents = await em.findOne(
+  async getResults(
+    em: EntityManager,
+    studyId: string,
+    user: User,
+  ): Promise<StudyResults> {
+    const study = await em.findOne(
       Study,
       {
         id: studyId,
@@ -32,7 +31,24 @@ export class ResultsService {
       },
     );
 
-    const statistics: RespondentsStatistics = {
+    if (!study) {
+      throw new Error('Study not found');
+    }
+
+    const respondents = await this.getRespondents(study);
+
+    return {
+      respondents,
+    } satisfies StudyResults;
+  }
+
+  async getRespondents(
+    study: Loaded<
+      Study,
+      'respondents.responses' | 'respondents.recordings' | 'tasks'
+    >,
+  ): Promise<RespondentResults> {
+    const statistics: RespondentStatistics = {
       abandoned: 0,
       completed: 0,
       running: 0,
@@ -44,7 +60,7 @@ export class ResultsService {
     const resolvedRespondents: ResolvedRespondent[] = [];
 
     // TODO: calculate statistics in one query, not in JS
-    for (const respondent of respondents.respondents.getItems()) {
+    for (const respondent of study.respondents.getItems()) {
       const time = respondent.finishedAt
         ? (respondent.finishedAt.getTime() - respondent.createdAt.getTime()) /
           1000
@@ -62,10 +78,11 @@ export class ResultsService {
 
       const recordings: ResolvedRespondent['recordings'] = [];
       for (const recording of respondent.recordings.getItems()) {
-        recordings.push({
-          type: recording.type,
-          url: await this.recordingService.getUrl(recording),
-        });
+        recording.location &&
+          recordings.push({
+            type: recording.type,
+            url: await this.recordingService.getUrl(recording),
+          });
       }
 
       resolvedRespondents.push({
@@ -75,7 +92,7 @@ export class ResultsService {
     }
 
     return {
-      respondents: resolvedRespondents,
+      data: resolvedRespondents,
       statistics,
     } satisfies RespondentResults;
   }

@@ -7,7 +7,10 @@ import { RecordingService } from '#app/recording/recording.service';
 import { Answer } from '#app/studies/entities/answer.entity';
 import { Option } from '#app/studies/entities/option.entity';
 import { Question } from '#app/studies/entities/question.entity';
-import { Respondent } from '#app/studies/entities/respondents.entity';
+import {
+  Respondent,
+  RespondentStatus,
+} from '#app/studies/entities/respondents.entity';
 import { Study } from '#app/studies/entities/study.entity';
 import { TaskResponse } from '#app/studies/entities/task-response.entity';
 import { Task } from '#app/studies/entities/task.entity';
@@ -174,6 +177,7 @@ export class PublicService {
     });
 
     respondent.finishedAt ??= new Date();
+    respondent.status = RespondentStatus.FINISHED;
     em.persist(respondent);
 
     run.tasksDone.push(run.currentTaskId);

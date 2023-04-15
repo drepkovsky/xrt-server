@@ -1,6 +1,7 @@
 import { AppConfig } from '#app/config/app.config';
 import { ConfigKey } from '#app/config/config.types';
 import { QueueName } from '#app/config/queue.config';
+import { StorageConfig } from '#app/config/storage.config';
 import {
   Recording,
   RecordingType,
@@ -16,22 +17,35 @@ import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Queue } from 'bull';
+import { join } from 'path';
 
 @Injectable()
 export class RecordingService {
+  private readonly appConfig: AppConfig;
+  private readonly storageConfig: StorageConfig;
+
   constructor(
     @InjectQueue(QueueName.RECORDING) private readonly recordingsQueue: Queue,
     private readonly storageService: StorageService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    this.appConfig = this.configService.getOrThrow<AppConfig>(ConfigKey.APP);
+    this.storageConfig = this.configService.getOrThrow<StorageConfig>(
+      ConfigKey.STORAGE,
+    );
+  }
 
   async getUrl(recording: Recording): Promise<string> {
     const disk = this.storageService.getDisk();
 
-    const appConfig = this.configService.get<AppConfig>(ConfigKey.APP);
+    if (!recording.location) return null;
 
-    if (disk.driver() === DriverType.LOCAL) {
-      return `${appConfig.baseUrl}/storage/${recording.location}`;
+    if (this.storageConfig.default === DriverType.LOCAL) {
+      // return join(this.appConfig.baseUrl, 'storage', recording.location);
+      return new URL(
+        join('storage', recording.location),
+        this.appConfig.baseUrl,
+      ).href;
     }
 
     return (await disk.getSignedUrl(recording.location)).signedUrl;

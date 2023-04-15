@@ -21,6 +21,10 @@ export type ResolvedRespondent = Omit<EntityDTO<Respondent>, 'recordings'> & {
 };
 
 export type RespondentResults = {
-  respondents: ResolvedRespondent[];
+  data: ResolvedRespondent[];
   statistics: RespondentsStatistics;
+};
+
+export type StudyResults = {
+  respondents: RespondentResults;
 };

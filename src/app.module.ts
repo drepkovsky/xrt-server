@@ -19,6 +19,7 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
+import { ScheduleModule } from '@nestjs/schedule/dist/schedule.module.js';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import RedisStore from 'connect-redis';
 import expressSession from 'express-session';
@@ -66,6 +67,7 @@ import { QueueConfig } from './config/queue.config.js';
         ...configService.getOrThrow<StorageConfig>(ConfigKey.STORAGE),
       }),
     }),
+    ScheduleModule.forRoot(),
     GlobalModule,
     AuthModule,
     StudyModule,

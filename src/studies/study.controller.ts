@@ -1,7 +1,7 @@
 import { UserParam } from '#app/auth/decorators/user-param.decorator';
 import { JwtAuthGuard } from '#app/auth/guards/jwt-auth.guard';
 import { UpdateStudyDto } from '#app/studies/dto/study.dto';
-import { StudyService } from '#app/studies/services/study.service';
+import { StudyService } from '#app/studies/providers/study.service';
 import { User } from '#app/users/entities/user.entity';
 import { MikroORM } from '@mikro-orm/core';
 import { Controller, Get, Post, UseGuards } from '@nestjs/common';

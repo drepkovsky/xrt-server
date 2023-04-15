@@ -4,7 +4,8 @@ import { IoGateway } from '#app/global/decorators/io-gateway.decorator';
 import { UseIoGuard } from '#app/global/decorators/use-io-guard.decorator';
 import { IoBaseGateway } from '#app/global/gateway/io-base.gateway';
 import { UpdateStudyDto } from '#app/studies/dto/study.dto';
-import { StudyService } from '#app/studies/services/study.service';
+import { ResultsService } from '#app/studies/providers/results.service';
+import { StudyService } from '#app/studies/providers/study.service';
 import { User } from '#app/users/entities/user.entity';
 import { MessageBody, SubscribeMessage } from '@nestjs/websockets';
 
@@ -14,7 +15,10 @@ import { MessageBody, SubscribeMessage } from '@nestjs/websockets';
   transports: ['websocket'],
 })
 export class StudyGateway extends IoBaseGateway {
-  constructor(private readonly studyService: StudyService) {
+  constructor(
+    private readonly studyService: StudyService,
+    private readonly resultsService: ResultsService,
+  ) {
     super();
   }
 
@@ -57,6 +61,13 @@ export class StudyGateway extends IoBaseGateway {
   async remove(@UserParam() user: User, @MessageBody('id') id: string) {
     return this.orm.em.transactional(async (em) => {
       return this.studyService.remove(em, id, user);
+    });
+  }
+
+  @SubscribeMessage('results')
+  async getRespondents(@UserParam() user: User, @MessageBody('id') id: string) {
+    return this.orm.em.transactional(async (em) => {
+      return this.resultsService.getResults(em, id, user);
     });
   }
 }
