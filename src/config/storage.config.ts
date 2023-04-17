@@ -11,7 +11,6 @@ import { join } from 'node:path';
 export type StorageConfig = StorageModuleOptions;
 
 export default registerAs(ConfigKey.STORAGE, (): StorageConfig => {
-  console.log('StorageConfig', join(process.cwd(), 'storage'));
   return {
     default: process.env.DEFAULT_STORAGE || DriverType.LOCAL,
     disks: {
