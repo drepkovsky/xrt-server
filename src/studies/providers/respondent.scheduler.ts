@@ -13,7 +13,6 @@ export class RespondentScheduler {
   // run every 10 seconds
   @Cron('*/10 * * * * *')
   async schedule() {
-    console.log('running cron');
     await this.cleanUpRespondents();
   }
 
@@ -26,10 +25,19 @@ export class RespondentScheduler {
       },
       finishedAt: null,
     });
+
     // set their status to abandoned
-    for (const respondent of respondents) {
-      respondent.status = RespondentStatus.ABANDONED;
-      respondent.abandonedAt = new Date();
+    for (const r of respondents) {
+      r.status = RespondentStatus.ABANDONED;
+      r.abandonedAt = new Date();
+    }
+
+    const finishedRespondents = await this.orm.em.find(Respondent, {
+      finishedAt: { $ne: null },
+    });
+
+    for (const r of finishedRespondents) {
+      r.status = RespondentStatus.FINISHED;
     }
 
     await this.orm.em.flush();
