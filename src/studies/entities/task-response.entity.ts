@@ -12,9 +12,8 @@ export class TaskResponse extends XrBaseEntity<TaskResponse> {
   @ManyToOne(() => Task, { ref: true })
   task!: Ref<Task>;
 
-  @Property({ nullable: true })
-  completedAt?: Date;
+  // TODO: time when task start should be different than created_at
 
   @Property({ nullable: true })
-  skippedAt?: Date;
+  completedAt?: Date;
 }

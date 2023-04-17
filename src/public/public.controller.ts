@@ -3,6 +3,7 @@ import { UsePublicStudy } from '#app/public/decorators/use-public-study.decorato
 import { AnswerDto } from '#app/public/dto/answer.dto';
 import { RecordingFileInterceptor } from '#app/public/interceptors/recording-file.interceptor';
 import { PublicService } from '#app/public/public.service';
+import { CreateEventDto } from '#app/studies/dto/event.dto';
 import { Task } from '#app/studies/entities/task.entity';
 import { MikroORM } from '@mikro-orm/core';
 import { Controller, Get, Req } from '@nestjs/common';
@@ -79,6 +80,17 @@ export class PublicController {
   ) {
     return this.orm.em.transactional(async (em) => {
       return this.publicService.processRecording(em, token, file);
+    });
+  }
+
+  @Post('event')
+  createEvent(
+    @Body() dto: CreateEventDto,
+    @Req() req: Request,
+    @PublicStudy() study: Study,
+  ) {
+    return this.orm.em.transactional(async (em) => {
+      return this.publicService.createEvent(em, study, req.session, dto);
     });
   }
 }

@@ -4,7 +4,9 @@ import {
   RecordingType,
 } from '#app/recording/entities/recording.entity';
 import { RecordingService } from '#app/recording/recording.service';
+import { CreateEventDto } from '#app/studies/dto/event.dto';
 import { Answer } from '#app/studies/entities/answer.entity';
+import { Event } from '#app/studies/entities/event.entity';
 import { Option } from '#app/studies/entities/option.entity';
 import { Question } from '#app/studies/entities/question.entity';
 import {
@@ -243,6 +245,24 @@ export class PublicService {
     await em.persistAndFlush(recording);
 
     return { success: true };
+  }
+
+  async createEvent(
+    em: EntityManager,
+    study: Study,
+    session: Session & Partial<SessionData>,
+    dto: CreateEventDto,
+  ) {
+    const run = session.runs?.[study.token];
+
+    const event = await em.create(Event, {
+      respondent: em.getReference(Respondent, run.respondentId),
+      ...dto,
+    });
+
+    await em.persistAndFlush(event);
+
+    return { sucess: true };
   }
 
   private getRespondentRecordings(recordings: Recording[]) {

@@ -1,5 +1,6 @@
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
 import { Recording } from '#app/recording/entities/recording.entity';
+import { Event } from '#app/studies/entities/event.entity';
 import { Study } from '#app/studies/entities/study.entity';
 import { TaskResponse } from '#app/studies/entities/task-response.entity';
 import {
@@ -28,6 +29,9 @@ export class Respondent extends XrBaseEntity<Respondent> {
 
   @OneToMany(() => Recording, (r) => r.respondent)
   recordings: Collection<Recording> = new Collection<Recording>(this);
+
+  @OneToMany(() => Event, (e) => e.respondent)
+  events: Collection<Event> = new Collection<Event>(this);
 
   @Enum(() => RespondentStatus)
   status: RespondentStatus = RespondentStatus.RUNNING;
