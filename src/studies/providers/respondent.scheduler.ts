@@ -32,14 +32,6 @@ export class RespondentScheduler {
       r.abandonedAt = new Date();
     }
 
-    const finishedRespondents = await this.orm.em.find(Respondent, {
-      finishedAt: { $ne: null },
-    });
-
-    for (const r of finishedRespondents) {
-      r.status = RespondentStatus.FINISHED;
-    }
-
     await this.orm.em.flush();
   }
 }
