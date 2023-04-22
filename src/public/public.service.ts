@@ -117,7 +117,6 @@ export class PublicService {
     }
 
     // TODO: write task response, check if skipped
-
     const taskResponse = await em.findOne(TaskResponse, {
       respondent: {
         id: run.respondentId,

@@ -11,7 +11,7 @@ export enum RecordingType {
 
 @Entity()
 export class Recording extends XrBaseEntity<Recording> {
-  @ManyToOne(() => Respondent)
+  @ManyToOne(() => Respondent, { ref: true })
   respondent!: Ref<Respondent>;
 
   @Property()
