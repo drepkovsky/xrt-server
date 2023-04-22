@@ -1,6 +1,6 @@
-import { RecordingType } from '#app/recording/entities/recording.entity';
-import { Respondent } from '#app/studies/entities/respondents.entity';
-import { EntityDTO } from 'node_modules/@mikro-orm/core/typings.js';
+import type { RecordingType } from '#app/recording/entities/recording.entity';
+import type { Respondent } from '#app/studies/entities/respondents.entity';
+import type { EntityDTO } from 'node_modules/@mikro-orm/core/typings.js';
 
 export type RespondentsStatistics = {
   total: number;

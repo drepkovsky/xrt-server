@@ -10,8 +10,8 @@ import {
   ManyToOne,
   OneToMany,
   Property,
-  Ref,
 } from '@mikro-orm/core';
+import type { Ref } from '@mikro-orm/core';
 
 export enum RespondentStatus {
   RUNNING = 'RUNNING',

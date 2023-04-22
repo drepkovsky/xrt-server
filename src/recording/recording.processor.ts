@@ -1,8 +1,6 @@
 import { QueueName } from '#app/config/queue.config';
-import {
-  RecordingJob,
-  RecordingJobProcessPayload,
-} from '#app/recording/recording.types';
+import type { RecordingJobProcessPayload } from '#app/recording/recording.types';
+import { RecordingJob } from '#app/recording/recording.types';
 import { MikroORM } from '@mikro-orm/core';
 import {
   OnQueueActive,

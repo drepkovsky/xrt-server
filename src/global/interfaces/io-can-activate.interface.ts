@@ -1,4 +1,5 @@
-import { Namespace, Server, Socket } from 'socket.io';
+import type { Namespace, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 
 /**
  * Custom CanActivate interface, because we are not executing from nestjs execution context.

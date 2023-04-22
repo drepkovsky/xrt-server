@@ -1,6 +1,7 @@
 import { Study } from '#app/studies/entities/study.entity';
 import { MikroORM } from '@mikro-orm/core';
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import type { CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ForbiddenException } from '@nestjs/common/exceptions/forbidden.exception.js';
 
 @Injectable()

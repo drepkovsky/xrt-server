@@ -1,10 +1,10 @@
 import { ConfigKey } from '#app/config/config.types';
-import {
+import type {
   DiskLocalConfigType,
   DiskS3ConfigType,
-  DriverType,
   StorageModuleOptions,
 } from '@codebrew/nestjs-storage';
+import { DriverType } from '@codebrew/nestjs-storage';
 import { registerAs } from '@nestjs/config';
 import { join } from 'node:path';
 

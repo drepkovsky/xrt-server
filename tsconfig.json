@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
+    "module": "nodenext",
     "moduleResolution": "nodenext",
     "declaration": true,
     "removeComments": true,
@@ -8,7 +8,7 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
+    "target": "esnext",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -22,7 +22,7 @@
     "paths": {
       "#app/*": [
         "./src/*.ts"
-      ],
+      ]
     }
   }
 }

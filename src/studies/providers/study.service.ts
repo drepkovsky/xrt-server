@@ -1,8 +1,8 @@
-import { UpdateStudyDto } from '#app/studies/dto/study.dto';
+import type { UpdateStudyDto } from '#app/studies/dto/study.dto';
 import { Study, StudyStatus } from '#app/studies/entities/study.entity';
 import { StudyUpdaterService } from '#app/studies/providers/study-updater.service';
-import { User } from '#app/users/entities/user.entity';
-import { EntityManager, Loaded, Populate } from '@mikro-orm/core';
+import type { User } from '#app/users/entities/user.entity';
+import type { EntityManager, Loaded, Populate } from '@mikro-orm/core';
 import {
   BadRequestException,
   Injectable,

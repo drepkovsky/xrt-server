@@ -1,4 +1,4 @@
-import {
+import type {
   RedisModuleOptions,
   RedisModuleOptionsMulti,
 } from '#app/global/redis/redis.types';

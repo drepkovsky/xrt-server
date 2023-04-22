@@ -5,10 +5,9 @@ import {
   Entity,
   ManyToMany,
   ManyToOne,
-  OneToMany,
   Property,
-  Ref,
 } from '@mikro-orm/core';
+import { Ref } from '@mikro-orm/core';
 import { IsOptional, MaxLength, MinLength } from 'class-validator';
 import { Answer } from '#app/studies/entities/answer.entity';
 import { Question } from '#app/studies/entities/question.entity';

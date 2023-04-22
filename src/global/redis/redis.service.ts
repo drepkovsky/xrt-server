@@ -2,7 +2,7 @@ import {
   REDIS_CLIENTS_TOKEN,
   REDIS_DEFAULT_CLIENT_NAME,
 } from '#app/global/redis/redis.constants';
-import { RedisClientsMap } from '#app/global/redis/redis.types';
+import type { RedisClientsMap } from '#app/global/redis/redis.types';
 import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()

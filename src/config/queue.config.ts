@@ -1,5 +1,5 @@
 import { ConfigKey } from '#app/config/config.types';
-import { BullModuleOptions } from '@nestjs/bull';
+import type { BullModuleOptions } from '@nestjs/bull';
 import { registerAs } from '@nestjs/config';
 
 export type QueueConfig = BullModuleOptions;

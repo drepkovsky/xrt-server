@@ -1,4 +1,4 @@
-import { FieldError } from '#app/global/types/error.types';
+import type { FieldError } from '#app/global/types/error.types';
 import { buildValidationErrorPayload } from '#app/global/utils/error.utils';
 import { BadRequestException } from '@nestjs/common';
 

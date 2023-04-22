@@ -1,10 +1,10 @@
-import { AnswerDto } from '#app/public/dto/answer.dto';
+import type { AnswerDto } from '#app/public/dto/answer.dto';
 import {
   Recording,
   RecordingType,
 } from '#app/recording/entities/recording.entity';
 import { RecordingService } from '#app/recording/recording.service';
-import { CreateEventDto } from '#app/studies/dto/event.dto';
+import type { CreateEventDto } from '#app/studies/dto/event.dto';
 import { Answer } from '#app/studies/entities/answer.entity';
 import { Event } from '#app/studies/entities/event.entity';
 import { Option } from '#app/studies/entities/option.entity';
@@ -16,9 +16,10 @@ import {
 import { Study } from '#app/studies/entities/study.entity';
 import { TaskResponse } from '#app/studies/entities/task-response.entity';
 import { Task } from '#app/studies/entities/task.entity';
-import { EntityManager, wrap } from '@mikro-orm/core';
+import type { EntityManager } from '@mikro-orm/core';
+import { wrap } from '@mikro-orm/core';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { Session, SessionData } from 'express-session';
+import type { Session, SessionData } from 'express-session';
 import { promisify } from 'util';
 
 @Injectable()

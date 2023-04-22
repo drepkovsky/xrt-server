@@ -1,4 +1,4 @@
-import { User } from '#app/users/entities/user.entity';
+import type { User } from '#app/users/entities/user.entity';
 import { UsersService } from '#app/users/users.service';
 import { MikroORM } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';

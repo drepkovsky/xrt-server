@@ -1,4 +1,4 @@
-import { RecordingType } from '#app/recording/entities/recording.entity';
+import type { RecordingType } from '#app/recording/entities/recording.entity';
 
 export enum RecordingJob {
   PROCESS = 'recording:process',

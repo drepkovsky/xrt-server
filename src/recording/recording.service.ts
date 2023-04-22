@@ -1,18 +1,16 @@
-import { AppConfig } from '#app/config/app.config';
+import type { AppConfig } from '#app/config/app.config';
 import { ConfigKey } from '#app/config/config.types';
 import { QueueName } from '#app/config/queue.config';
-import { StorageConfig } from '#app/config/storage.config';
+import type { StorageConfig } from '#app/config/storage.config';
 import {
   Recording,
   RecordingType,
 } from '#app/recording/entities/recording.entity';
-import {
-  RecordingJob,
-  RecordingJobProcessPayload,
-} from '#app/recording/recording.types';
-import { Respondent } from '#app/studies/entities/respondents.entity';
+import type { RecordingJobProcessPayload } from '#app/recording/recording.types';
+import { RecordingJob } from '#app/recording/recording.types';
+import type { Respondent } from '#app/studies/entities/respondents.entity';
 import { DriverType, StorageService } from '@codebrew/nestjs-storage';
-import { EntityManager, Ref } from '@mikro-orm/core';
+import type { EntityManager, Ref } from '@mikro-orm/core';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

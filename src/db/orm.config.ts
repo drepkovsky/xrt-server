@@ -1,4 +1,4 @@
-import { Options } from '@mikro-orm/core';
+import type { Options } from '@mikro-orm/core';
 import dotenv from 'dotenv';
 
 dotenv.config();

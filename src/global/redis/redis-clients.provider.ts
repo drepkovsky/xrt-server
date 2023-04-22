@@ -3,7 +3,7 @@ import {
   REDIS_DEFAULT_CLIENT_NAME,
 } from '#app/global/redis/redis.constants';
 import { REDIS_MODULE_OPTIONS_TOKEN } from '#app/global/redis/redis.module-definition';
-import {
+import type {
   RedisClientsMap,
   RedisModuleOptions,
   RedisModuleOptionsMulti,

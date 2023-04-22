@@ -11,7 +11,6 @@ import {
   ManyToOne,
   OneToMany,
   Property,
-  Ref,
   Unique,
 } from '@mikro-orm/core';
 import {
@@ -21,6 +20,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { nanoid } from 'nanoid';
+import type { Ref } from '@mikro-orm/core';
 
 export enum StudyStatus {
   DRAFT = 'draft',

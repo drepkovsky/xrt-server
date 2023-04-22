@@ -1,6 +1,6 @@
-import { User } from '#app/users/entities/user.entity';
-import { Request } from 'express';
-import { Socket } from 'socket.io';
+import type { Request } from 'express';
+import type { Socket } from 'socket.io';
+import type { User } from '#app/users/entities/user.entity';
 
 export enum CRUDGroup {
   CREATE = 'create',

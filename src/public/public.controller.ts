@@ -4,7 +4,6 @@ import { AnswerDto } from '#app/public/dto/answer.dto';
 import { RecordingFileInterceptor } from '#app/public/interceptors/recording-file.interceptor';
 import { PublicService } from '#app/public/public.service';
 import { CreateEventDto } from '#app/studies/dto/event.dto';
-import { Task } from '#app/studies/entities/task.entity';
 import { MikroORM } from '@mikro-orm/core';
 import { Controller, Get, Req } from '@nestjs/common';
 import {
@@ -14,8 +13,9 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common/decorators/index.js';
-import { Request } from 'express';
 import { Study } from '../studies/entities/study.entity.js';
+import type { Request } from 'express';
+import type { Task } from '#app/studies/entities/task.entity';
 
 @UsePublicStudy()
 @Controller('public')

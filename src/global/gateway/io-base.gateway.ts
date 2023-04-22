@@ -1,17 +1,18 @@
 import { IO_GUARDS_METADATA } from '#app/global/decorators/use-io-guard.decorator';
 import { WsExceptionFilter } from '#app/global/exceptions/ws-exception-filter';
-import { IoCanActivate } from '#app/global/interfaces/io-can-activate.interface';
+import type { IoCanActivate } from '#app/global/interfaces/io-can-activate.interface';
 import { MikroORM } from '@mikro-orm/core';
-import { Inject, Logger, Type, UseFilters } from '@nestjs/common';
+import type { Type } from '@nestjs/common';
+import { Inject, Logger, UseFilters } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import {
+import type {
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
-  WebSocketServer,
-  WsException,
 } from '@nestjs/websockets';
-import { Namespace, Socket } from 'socket.io';
+import { WebSocketServer, WsException } from '@nestjs/websockets';
+import type { Socket } from 'socket.io';
+import { Namespace } from 'socket.io';
 
 /**
  * Attach event scoped guards through @UseGuards() decorator.

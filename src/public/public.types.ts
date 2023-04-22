@@ -1,4 +1,4 @@
-import { Study } from '#app/studies/entities/study.entity';
+import type { Study } from '#app/studies/entities/study.entity';
 
 declare module 'express-session' {
   interface SessionData {

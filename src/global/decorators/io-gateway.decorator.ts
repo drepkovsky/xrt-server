@@ -1,5 +1,6 @@
 import { buildNamespaceRegex } from '#app/global/utils/gateway.utils';
-import { GatewayMetadata, WebSocketGateway } from '@nestjs/websockets';
+import type { GatewayMetadata } from '@nestjs/websockets';
+import { WebSocketGateway } from '@nestjs/websockets';
 
 export const IO_NAMESPACE_METADATA = 'io:namespace';
 

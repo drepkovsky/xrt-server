@@ -1,7 +1,8 @@
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
 import { Respondent } from '#app/studies/entities/respondents.entity';
 import { Task } from '#app/studies/entities/task.entity';
-import { Entity, ManyToOne, Property, Ref, Unique } from '@mikro-orm/core';
+import { Entity, ManyToOne, Property, Unique } from '@mikro-orm/core';
+import type { Ref } from '@mikro-orm/core';
 
 @Entity()
 @Unique({ properties: ['respondent', 'task'] })

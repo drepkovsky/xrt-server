@@ -1,7 +1,8 @@
 import { IO_NAMESPACE_METADATA } from '#app/global/decorators/io-gateway.decorator';
 import { parseNamespace } from '#app/global/utils/gateway.utils';
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { Socket } from 'socket.io';
+import type { ExecutionContext } from '@nestjs/common';
+import { createParamDecorator } from '@nestjs/common';
+import type { Socket } from 'socket.io';
 
 export const IoParam = createParamDecorator<string | undefined>(
   (key: string | undefined, ctx: ExecutionContext) => {

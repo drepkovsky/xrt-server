@@ -1,7 +1,8 @@
-import { IoCanActivate } from '#app/global/interfaces/io-can-activate.interface';
+import type { IoCanActivate } from '#app/global/interfaces/io-can-activate.interface';
 
 export const IO_GUARDS_METADATA = 'ioGuards:metadata';
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type IoGuard = IoCanActivate | Function;
 
 export function UseIoGuard(...middlewares: IoGuard[]) {

@@ -1,5 +1,5 @@
 import { ConfigKey } from '#app/config/config.types';
-import {
+import type {
   RedisModuleOptions,
   RedisModuleOptionsMulti,
 } from '#app/global/redis/redis.types';

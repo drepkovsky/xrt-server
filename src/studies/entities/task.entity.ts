@@ -3,16 +3,14 @@ import { CRUDGroup } from '#app/global/types/common.types';
 import { normalizeEventName } from '#app/global/utils/task.utils';
 import { Study } from '#app/studies/entities/study.entity';
 import { TaskResponse } from '#app/studies/entities/task-response.entity';
+import type { EventArgs, EventSubscriber, Ref } from '@mikro-orm/core';
 import {
   Collection,
   Entity,
-  EventArgs,
-  EventSubscriber,
   Index,
   ManyToOne,
   OneToMany,
   Property,
-  Ref,
   Subscriber,
 } from '@mikro-orm/core';
 import {

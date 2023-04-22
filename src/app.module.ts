@@ -1,10 +1,9 @@
-import { AuthModule } from '#app/auth/auth.module';
 import { ConfigKey } from '#app/config/config.types';
 import { configs } from '#app/config/main';
-import { OrmConfig } from '#app/config/orm.config';
+import type { OrmConfig } from '#app/config/orm.config';
 import { RedisClient } from '#app/config/redis.config';
-import { SessionConfig } from '#app/config/session.config';
-import { StorageConfig } from '#app/config/storage.config';
+import type { SessionConfig } from '#app/config/session.config';
+import type { StorageConfig } from '#app/config/storage.config';
 import { GlobalModule } from '#app/global/global.module';
 import { XrValidationPipe } from '#app/global/pipe/xr-validation.pipe';
 import { RedisService } from '#app/global/redis/redis.service';
@@ -15,7 +14,7 @@ import { UsersModule } from '#app/users/users.module';
 import { StorageModule } from '@codebrew/nestjs-storage';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { BullModule } from '@nestjs/bull';
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import type { MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
@@ -25,7 +24,9 @@ import RedisStore from 'connect-redis';
 import expressSession from 'express-session';
 import { LoggerModule } from 'nestjs-pino';
 import { join } from 'node:path';
-import { QueueConfig } from './config/queue.config.js';
+import type { QueueConfig } from './config/queue.config.js';
+import { Module } from '@nestjs/common';
+import { AuthModule } from '#app/auth/auth.module';
 
 @Module({
   imports: [

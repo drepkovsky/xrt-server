@@ -1,15 +1,14 @@
 import { AuthService } from '#app/auth/auth.service';
-import { AuthPayload } from '#app/auth/auth.types';
+import type { AuthPayload } from '#app/auth/auth.types';
 import { UserParam } from '#app/auth/decorators/user-param.decorator';
-import { LoginDto, RegisterDto } from '#app/auth/dto/auth.dto';
+import { RegisterDto } from '#app/auth/dto/auth.dto';
 import { JwtAuthGuard } from '#app/auth/guards/jwt-auth.guard';
 import { LocalAuthGuard } from '#app/auth/guards/local-auth.guard';
-import { ValidationException } from '#app/global/exceptions/validation.exception';
-import { RequestWithUser } from '#app/global/types/common.types';
 import { User } from '#app/users/entities/user.entity';
 import { UsersService } from '#app/users/users.service';
 import { MikroORM } from '@mikro-orm/core';
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import type { RequestWithUser } from '#app/global/types/common.types';
 
 @Controller('auth')
 export class AuthController {

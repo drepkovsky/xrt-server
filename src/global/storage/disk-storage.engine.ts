@@ -1,9 +1,9 @@
-import { Storage } from '@slynova/flydrive';
-import { Request } from 'express';
-import { ParamsDictionary } from 'express-serve-static-core';
-import multer from 'multer';
+import type { Storage } from '@slynova/flydrive';
+import type { Request } from 'express';
+import type { ParamsDictionary } from 'express-serve-static-core';
+import type multer from 'multer';
 import { nanoid } from 'nanoid';
-import { ParsedQs } from 'qs';
+import type { ParsedQs } from 'qs';
 
 const defaultGetFilename = (
   req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,

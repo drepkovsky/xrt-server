@@ -1,7 +1,7 @@
-import { JwtPayload } from '#app/auth/auth.types';
+import type { JwtPayload } from '#app/auth/auth.types';
 import { ConfigKey } from '#app/config/config.types';
-import { JwtConfig } from '#app/config/jwt.config';
-import { User } from '#app/users/entities/user.entity';
+import type { JwtConfig } from '#app/config/jwt.config';
+import type { User } from '#app/users/entities/user.entity';
 import { UsersService } from '#app/users/users.service';
 import { MikroORM } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';

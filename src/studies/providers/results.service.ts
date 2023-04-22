@@ -1,16 +1,16 @@
 import { RecordingService } from '#app/recording/recording.service';
 import { RespondentStatus } from '#app/studies/entities/respondents.entity';
 import { Study } from '#app/studies/entities/study.entity';
-import {
+import type {
   ResolvedRespondent,
   RespondentResults,
   RespondentsStatistics as RespondentStatistics,
   StudyResults,
 } from '#app/studies/types/results.types';
-import { User } from '#app/users/entities/user.entity.js';
-import { EntityManager, Loaded, QueryOrder } from '@mikro-orm/core';
+import type { User } from '#app/users/entities/user.entity';
+import type { EntityManager, Loaded } from '@mikro-orm/core';
+import { QueryOrder } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
-import { StudyController } from '#app/studies/study.controller';
 
 @Injectable()
 export class ResultsService {

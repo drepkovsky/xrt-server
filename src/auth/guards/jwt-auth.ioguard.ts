@@ -1,9 +1,9 @@
-import { IoCanActivate } from '#app/global/interfaces/io-can-activate.interface';
+import type { IoCanActivate } from '#app/global/interfaces/io-can-activate.interface';
 import { UsersService } from '#app/users/users.service';
 import { MikroORM } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Namespace, Socket } from 'socket.io';
+import type { Namespace, Socket } from 'socket.io';
 
 @Injectable()
 export class JwtAuthIoGuard implements IoCanActivate {

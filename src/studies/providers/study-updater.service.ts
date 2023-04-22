@@ -1,20 +1,23 @@
 import { isNullish } from '#app/global/utils/misc.utils';
-import { UpdateQuestionDto } from '#app/studies/dto/question.dto';
-import { UpdateQuestionnaireDto } from '#app/studies/dto/questionnaire.dto';
-import {
+import type { UpdateQuestionDto } from '#app/studies/dto/question.dto';
+import type { UpdateQuestionnaireDto } from '#app/studies/dto/questionnaire.dto';
+import type {
   StudyAddPayloadDto,
-  StudyAddResource,
   StudyRemovePayloadDto,
-  StudyRemoveResource,
   StudyUpdatePayloadDto,
 } from '#app/studies/dto/study.dto';
-import { UpdateTaskDto } from '#app/studies/dto/task.dto';
+import {
+  StudyAddResource,
+  StudyRemoveResource,
+} from '#app/studies/dto/study.dto';
+import type { UpdateTaskDto } from '#app/studies/dto/task.dto';
 import { Option } from '#app/studies/entities/option.entity';
 import { Question, QuestionType } from '#app/studies/entities/question.entity';
 import { Questionnaire } from '#app/studies/entities/questionnaire.entity';
-import { Study } from '#app/studies/entities/study.entity';
+import type { Study } from '#app/studies/entities/study.entity';
 import { Task } from '#app/studies/entities/task.entity';
-import { EntityManager, Loaded, wrap } from '@mikro-orm/core';
+import type { EntityManager, Loaded } from '@mikro-orm/core';
+import { wrap } from '@mikro-orm/core';
 import { Injectable, Logger } from '@nestjs/common';
 
 type UpdatableStudy = Loaded<

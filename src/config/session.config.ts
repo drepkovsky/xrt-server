@@ -1,8 +1,8 @@
 import { ConfigKey } from '#app/config/config.types';
 import { registerAs } from '@nestjs/config';
-import { SessionOptions } from 'express-session';
+import type { SessionOptions } from 'express-session';
 
-export interface SessionConfig extends SessionOptions {}
+export type SessionConfig = SessionOptions;
 
 export default registerAs(ConfigKey.SESSION, (): SessionConfig => {
   return {

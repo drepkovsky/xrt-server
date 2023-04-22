@@ -2,8 +2,8 @@
 https://docs.nestjs.com/providers#services
 */
 
-import { JwtPayload } from '#app/auth/auth.types';
-import { User } from '#app/users/entities/user.entity';
+import type { JwtPayload } from '#app/auth/auth.types';
+import type { User } from '#app/users/entities/user.entity';
 import { UsersService } from '#app/users/users.service';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';

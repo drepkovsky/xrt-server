@@ -1,5 +1,5 @@
 import { AppModule } from '#app/app.module';
-import { AppConfig } from '#app/config/app.config';
+import type { AppConfig } from '#app/config/app.config';
 import { ConfigKey } from '#app/config/config.types';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';

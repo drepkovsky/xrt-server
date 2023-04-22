@@ -1,7 +1,7 @@
 import { ValidationException } from '#app/global/exceptions/validation.exception';
-import { CreateUserDto, FindUserDto } from '#app/users/dto/users.dto';
+import type { CreateUserDto, FindUserDto } from '#app/users/dto/users.dto';
 import { User } from '#app/users/entities/user.entity';
-import { EntityManager } from '@mikro-orm/core';
+import type { EntityManager } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 @Injectable()

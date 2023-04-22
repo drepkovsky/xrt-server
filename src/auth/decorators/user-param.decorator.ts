@@ -1,4 +1,4 @@
-import {
+import type {
   RequestWithUser,
   SocketWithUser,
 } from '#app/global/types/common.types';
