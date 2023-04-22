@@ -33,16 +33,24 @@ export class PublicService {
     study: Study,
     session: Session & Partial<SessionData>,
   ) {
+    // TODO: for now we will run study again to preserve whole recording, find out better way
     if (session.runs && session.runs[study.token]) {
-      // study is already running we don't want to start it again
+      this.logger.debug(
+        `Study ${study.token} already started for respondent ${
+          session.runs[study.token].respondentId
+        }`,
+      );
 
-      const recordings = await em.find(Recording, {
-        respondent: session.runs[study.token].respondentId,
+      //   set old respondent as abandoned
+      const oldRespondent = await em.findOne(Respondent, {
+        id: session.runs[study.token].respondentId,
       });
-      return this.getRespondentRecordings(recordings);
+
+      oldRespondent.status = RespondentStatus.ABANDONED;
+      oldRespondent.abandonedAt = new Date();
+      em.persist(oldRespondent);
     }
 
-    // TODO
     const respondent = em.create(Respondent, {
       study: em.getReference(Study, study.id),
     });

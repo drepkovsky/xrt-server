@@ -1,5 +1,4 @@
 import { ConfigKey } from '#app/config/config.types';
-import { FfmpegModule } from '#app/global/ffmpeg/ffmpeg.module';
 import { RedisModule } from '#app/global/redis/redis.module';
 import { DriverType, StorageService } from '@codebrew/nestjs-storage';
 import { Module } from '@nestjs/common/decorators/index.js';
@@ -14,9 +13,8 @@ import { AmazonWebServicesS3Storage } from '@slynova/flydrive-s3';
         configService.get(ConfigKey.REDIS),
       imports: [ConfigModule],
     }),
-    FfmpegModule,
   ],
-  exports: [RedisModule, FfmpegModule],
+  exports: [RedisModule],
 })
 export class GlobalModule {
   constructor(private readonly storageService: StorageService) {

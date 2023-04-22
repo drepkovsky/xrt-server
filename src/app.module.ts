@@ -13,7 +13,6 @@ import { StudyModule } from '#app/studies/study.module';
 import { UsersModule } from '#app/users/users.module';
 import { StorageModule } from '@codebrew/nestjs-storage';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { BullModule } from '@nestjs/bull';
 import type { MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
@@ -24,7 +23,6 @@ import RedisStore from 'connect-redis';
 import expressSession from 'express-session';
 import { LoggerModule } from 'nestjs-pino';
 import { join } from 'node:path';
-import type { QueueConfig } from './config/queue.config.js';
 import { Module } from '@nestjs/common';
 import { AuthModule } from '#app/auth/auth.module';
 
@@ -47,13 +45,6 @@ import { AuthModule } from '#app/auth/auth.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         ...configService.get<OrmConfig>(ConfigKey.ORM),
-      }),
-    }),
-    BullModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        ...configService.getOrThrow<QueueConfig>(ConfigKey.QUEUE),
       }),
     }),
     ServeStaticModule.forRoot({
