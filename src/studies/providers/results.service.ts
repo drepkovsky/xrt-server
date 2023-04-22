@@ -62,6 +62,7 @@ export class ResultsService {
     };
 
     const resolvedRespondents: ResolvedRespondent[] = [];
+    let i = 0;
 
     // TODO: calculate statistics in one query, not in JS
     for (const respondent of study.respondents.getItems()) {
@@ -92,6 +93,7 @@ export class ResultsService {
       resolvedRespondents.push({
         ...respondent.toJSON(),
         recordings,
+        order: i++,
       });
     }
 

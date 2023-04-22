@@ -18,6 +18,7 @@ export type ResolvedRespondent = Omit<EntityDTO<Respondent>, 'recordings'> & {
     type: RecordingType;
     url: string;
   }[];
+  order: number;
 };
 
 export type RespondentResults = {
