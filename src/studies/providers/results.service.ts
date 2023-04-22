@@ -7,9 +7,10 @@ import {
   RespondentsStatistics as RespondentStatistics,
   StudyResults,
 } from '#app/studies/types/results.types';
-import { User } from '#app/users/entities/user.entity';
-import { EntityManager, Loaded } from '@mikro-orm/core';
+import { User } from '#app/users/entities/user.entity.js';
+import { EntityManager, Loaded, QueryOrder } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';
+import { StudyController } from '#app/studies/study.controller';
 
 @Injectable()
 export class ResultsService {
@@ -28,6 +29,9 @@ export class ResultsService {
       },
       {
         populate: ['respondents.responses', 'respondents.recordings', 'tasks'],
+        orderBy: {
+          createdAt: QueryOrder.asc,
+        },
       },
     );
 
