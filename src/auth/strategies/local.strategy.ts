@@ -7,10 +7,7 @@ import { Strategy } from 'passport-local';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(
-    private userService: UsersService,
-    private readonly orm: MikroORM,
-  ) {
+  constructor(private userService: UsersService, private readonly orm: MikroORM) {
     super({ usernameField: 'email' });
   }
 

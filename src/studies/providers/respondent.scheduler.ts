@@ -1,7 +1,4 @@
-import {
-  Respondent,
-  RespondentStatus,
-} from '#app/studies/entities/respondents.entity';
+import { Respondent, RespondentStatus } from '#app/studies/entities/respondents.entity';
 import { UseRequestContext } from '@mikro-orm/core';
 import { MikroORM } from '@mikro-orm/core';
 import { Injectable } from '@nestjs/common';

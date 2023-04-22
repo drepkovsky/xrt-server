@@ -10,8 +10,7 @@ const defaultGetFilename = (
   file: Express.Multer.File,
   callback: (error: Error | null, filename: string) => void,
 ) => {
-  const ext =
-    file.originalname.split('.').pop() || file.mimetype.split('/').pop();
+  const ext = file.originalname.split('.').pop() || file.mimetype.split('/').pop();
   const fileName = `/uploads/${Date.now}_${nanoid()}${ext ? '.' + ext : ''}`;
   callback(null, fileName);
 };

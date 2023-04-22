@@ -5,11 +5,7 @@ import { MikroORM } from '@mikro-orm/core';
 import type { Type } from '@nestjs/common';
 import { Inject, Logger, UseFilters } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import type {
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  OnGatewayInit,
-} from '@nestjs/websockets';
+import type { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit } from '@nestjs/websockets';
 import { WebSocketServer, WsException } from '@nestjs/websockets';
 import type { Socket } from 'socket.io';
 import { Namespace } from 'socket.io';
@@ -19,9 +15,7 @@ import { Namespace } from 'socket.io';
  * Attach connection scoped guards through @UseIoGuard() decorator.
  */
 @UseFilters(new WsExceptionFilter())
-export abstract class IoBaseGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+export abstract class IoBaseGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   logger = new Logger(this.constructor.name);
   @WebSocketServer() protected io: Namespace;
   @Inject(ModuleRef) private readonly moduleRef: ModuleRef;
@@ -32,10 +26,9 @@ export abstract class IoBaseGateway
    */
   private resolveGuards(): IoCanActivate[] {
     // eslint-disable-next-line @typescript-eslint/ban-types
-    const metatypes: (IoCanActivate | Function)[] =
-      Reflect.getMetadata(IO_GUARDS_METADATA, this.constructor) || [];
+    const metatypes: (IoCanActivate | Function)[] = Reflect.getMetadata(IO_GUARDS_METADATA, this.constructor) || [];
     return metatypes
-      .map((metatype) => {
+      .map(metatype => {
         if ((metatype as IoCanActivate).canActivate) {
           return metatype as IoCanActivate;
         }
@@ -45,7 +38,7 @@ export abstract class IoBaseGateway
         });
         return injectable.canActivate ? injectable : null;
       })
-      .filter((guard) => !!guard);
+      .filter(guard => !!guard);
   }
 
   /**
@@ -73,8 +66,7 @@ export abstract class IoBaseGateway
             ex.message = typeof errData === 'string' ? errData : e.message;
             (ex as any).data = { status: 'error', message: ex.message };
             // if err is an object, then we can use it as the data
-            if (typeof errData === 'object')
-              (ex as any).data = { ...(ex as any).data, ...errData };
+            if (typeof errData === 'object') (ex as any).data = { ...(ex as any).data, ...errData };
           }
           return next(ex);
         }

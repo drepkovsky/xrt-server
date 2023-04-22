@@ -5,11 +5,4 @@ import redisConfig from '#app/config/redis.config';
 import sessionConfig from '#app/config/session.config';
 import storageConfig from '#app/config/storage.config';
 
-export const configs = [
-  jwtConfig,
-  ormConfig,
-  appConfig,
-  redisConfig,
-  sessionConfig,
-  storageConfig,
-];
+export const configs = [jwtConfig, ormConfig, appConfig, redisConfig, sessionConfig, storageConfig];

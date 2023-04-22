@@ -5,19 +5,10 @@ import { IntersectionType, PickType } from '@nestjs/mapped-types';
 import { PartialType } from '@nestjs/mapped-types/dist/partial-type.helper.js';
 
 @ValidationGroup(CRUDGroup.CREATE)
-export class CreateUserDto extends PickType(User, [
-  'name',
-  'email',
-  'password',
-]) {}
+export class CreateUserDto extends PickType(User, ['name', 'email', 'password']) {}
 
 @ValidationGroup(CRUDGroup.UPDATE)
-export class UpdateUserDto extends IntersectionType(
-  PartialType(CreateUserDto),
-  PickType(User, ['id']),
-) {}
+export class UpdateUserDto extends IntersectionType(PartialType(CreateUserDto), PickType(User, ['id'])) {}
 
 @ValidationGroup(CRUDGroup.FIND)
-export class FindUserDto extends PartialType(
-  PickType(User, ['name', 'email', 'id']),
-) {}
+export class FindUserDto extends PartialType(PickType(User, ['name', 'email', 'id'])) {}

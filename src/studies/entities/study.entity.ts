@@ -4,21 +4,8 @@ import { Questionnaire } from '#app/studies/entities/questionnaire.entity';
 import { Respondent } from '#app/studies/entities/respondents.entity';
 import { Task } from '#app/studies/entities/task.entity';
 import { User } from '#app/users/entities/user.entity';
-import {
-  Collection,
-  Entity,
-  Enum,
-  ManyToOne,
-  OneToMany,
-  Property,
-  Unique,
-} from '@mikro-orm/core';
-import {
-  IsOptional,
-  MaxLength,
-  MinLength,
-  ValidateNested,
-} from 'class-validator';
+import { Collection, Entity, Enum, ManyToOne, OneToMany, Property, Unique } from '@mikro-orm/core';
+import { IsOptional, MaxLength, MinLength, ValidateNested } from 'class-validator';
 import { nanoid } from 'nanoid';
 import type { Ref } from '@mikro-orm/core';
 
@@ -57,7 +44,7 @@ export class Study extends XrBaseEntity<Study> {
   @OneToMany(() => Task, 'study')
   tasks: Collection<Task> = new Collection<Task>(this);
 
-  @OneToMany(() => Respondent, (r) => r.study)
+  @OneToMany(() => Respondent, r => r.study)
   respondents: Collection<Respondent> = new Collection<Respondent>(this);
 
   @ManyToOne(() => Questionnaire, { nullable: true, ref: true })

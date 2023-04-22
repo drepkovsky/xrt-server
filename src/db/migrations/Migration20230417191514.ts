@@ -16,8 +16,6 @@ export class Migration20230417191514 extends Migration {
   async down(): Promise<void> {
     this.addSql('drop table if exists "event" cascade;');
 
-    this.addSql(
-      'alter table "task_response" add column "skipped_at" timestamptz null default null;',
-    );
+    this.addSql('alter table "task_response" add column "skipped_at" timestamptz null default null;');
   }
 }

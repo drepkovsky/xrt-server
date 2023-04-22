@@ -21,9 +21,7 @@ export class Migration20230402123731 extends Migration {
       'alter table "answer_options" add constraint "answer_options_option_id_foreign" foreign key ("option_id") references "option" ("id") on update cascade on delete cascade;',
     );
 
-    this.addSql(
-      'alter table "answer" drop constraint "answer_option_id_foreign";',
-    );
+    this.addSql('alter table "answer" drop constraint "answer_option_id_foreign";');
 
     this.addSql('alter table "answer" drop column "option_id";');
   }
@@ -33,9 +31,7 @@ export class Migration20230402123731 extends Migration {
 
     this.addSql('drop table if exists "answer_options" cascade;');
 
-    this.addSql(
-      'alter table "answer" add column "option_id" int8 not null default null;',
-    );
+    this.addSql('alter table "answer" add column "option_id" int8 not null default null;');
     this.addSql(
       'alter table "answer" add constraint "answer_option_id_foreign" foreign key ("option_id") references "option" ("id") on update cascade on delete no action;',
     );

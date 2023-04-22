@@ -1,8 +1,5 @@
 import { ConfigKey } from '#app/config/config.types';
-import type {
-  RedisModuleOptions,
-  RedisModuleOptionsMulti,
-} from '#app/global/redis/redis.types';
+import type { RedisModuleOptions, RedisModuleOptionsMulti } from '#app/global/redis/redis.types';
 import { registerAs } from '@nestjs/config';
 
 export type RedisConfig = RedisModuleOptionsMulti;
@@ -24,5 +21,5 @@ export default registerAs(ConfigKey.REDIS, (): RedisConfig => {
     },
   ] satisfies RedisConfig;
 
-  return config.map((c) => ({ ...c, ...baseConfig }));
+  return config.map(c => ({ ...c, ...baseConfig }));
 });

@@ -12,11 +12,7 @@ import type { RequestWithUser } from '#app/global/types/common.types';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private authService: AuthService,
-    private userService: UsersService,
-    private readonly orm: MikroORM,
-  ) {}
+  constructor(private authService: AuthService, private userService: UsersService, private readonly orm: MikroORM) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -26,7 +22,7 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() dto: RegisterDto): Promise<AuthPayload> {
-    return this.orm.em.transactional(async (em) => {
+    return this.orm.em.transactional(async em => {
       const user = await this.userService.create(em, {
         email: dto.email,
         password: dto.password,

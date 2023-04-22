@@ -10,9 +10,7 @@ import { UpdateQuestionDto } from '#app/studies/dto/question.dto';
 export class CreateQuestionnaireDto {}
 
 @ValidationGroup(CRUDGroup.UPDATE)
-export class UpdateQuestionnaireDto extends IntersectionType(
-  PickType(Questionnaire, ['id']),
-) {
+export class UpdateQuestionnaireDto extends IntersectionType(PickType(Questionnaire, ['id'])) {
   @Type(() => UpdateQuestionDto)
   @ValidateNested({ each: true })
   questions: UpdateQuestionDto[];

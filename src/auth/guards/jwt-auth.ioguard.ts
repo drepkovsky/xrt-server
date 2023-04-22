@@ -16,7 +16,7 @@ export class JwtAuthIoGuard implements IoCanActivate {
   async canActivate(socket: Socket, io: Namespace): Promise<boolean> {
     const token = socket.handshake.auth.token;
     const jwtPayload = await this.jwtService.verify(token);
-    return this.orm.em.transactional(async (em) => {
+    return this.orm.em.transactional(async em => {
       const user = await this.userService.findOne(em, jwtPayload.sub);
       if (!user) return false;
       socket.data.user = user;

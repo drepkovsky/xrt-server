@@ -21,9 +21,7 @@ export class Migration20230305183208 extends Migration {
     this.addSql(
       'create table "study" ("id" bigserial primary key, "created_at" timestamptz(0) not null, "updated_at" timestamptz(0) not null, "deleted_at" timestamptz(0) not null, "name" varchar(255) not null, "token" varchar(255) not null, "status" text check ("status" in (\'draft\', \'active\', \'finished\')) not null default \'draft\', "created_by_id" bigint not null, "pre_study_questionnaire_id" bigint not null, "post_study_questionnaire_id" bigint not null);',
     );
-    this.addSql(
-      'alter table "study" add constraint "study_token_unique" unique ("token");',
-    );
+    this.addSql('alter table "study" add constraint "study_token_unique" unique ("token");');
 
     this.addSql(
       'create table "task" ("id" bigserial primary key, "created_at" timestamptz(0) not null, "updated_at" timestamptz(0) not null, "deleted_at" timestamptz(0) not null, "name" varchar(255) not null, "study_id" bigint not null, "is_required" boolean not null default false);',

@@ -31,7 +31,7 @@ export class UsersService {
   }
 
   async validateUser(em: EntityManager, email: string, password: string) {
-    return this.findOne(em, { email }).then(async (user) => {
+    return this.findOne(em, { email }).then(async user => {
       if (user && (await this._validatePassword(password, user.password))) {
         return user;
       }

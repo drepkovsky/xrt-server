@@ -9,11 +9,6 @@ export enum RecordingType {
   SCREEN = 'screen',
 }
 
-export enum RecordingState {
-  RAW = 'raw',
-  processed = 'processed',
-}
-
 @Entity()
 export class Recording extends XrBaseEntity<Recording> {
   @ManyToOne(() => Respondent)
@@ -25,6 +20,8 @@ export class Recording extends XrBaseEntity<Recording> {
   @Enum(() => RecordingType)
   type!: RecordingType;
 
-  @Property({ nullable: true })
+  @Property({
+    nullable: true,
+  })
   location?: string;
 }

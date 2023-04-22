@@ -3,11 +3,7 @@ import { Study, StudyStatus } from '#app/studies/entities/study.entity';
 import { StudyUpdaterService } from '#app/studies/providers/study-updater.service';
 import type { User } from '#app/users/entities/user.entity';
 import type { EntityManager, Loaded, Populate } from '@mikro-orm/core';
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 
 @Injectable()
@@ -85,12 +81,7 @@ export class StudyService {
     dto: UpdateStudyDto,
     user: User,
   ): Promise<
-    Loaded<
-      Study,
-      | 'tasks'
-      | 'preStudyQuestionnaire.questions.options'
-      | 'postStudyQuestionnaire.questions.options'
-    >
+    Loaded<Study, 'tasks' | 'preStudyQuestionnaire.questions.options' | 'postStudyQuestionnaire.questions.options'>
   > {
     const study = await this.findOne(em, dto.id, user, [
       'tasks',
@@ -99,9 +90,7 @@ export class StudyService {
     ]);
 
     if (study.status !== StudyStatus.DRAFT)
-      throw new BadRequestException(
-        'Cannot update a study that is not in draft mode',
-      );
+      throw new BadRequestException('Cannot update a study that is not in draft mode');
 
     dto.update && this.studyUpdaterService.handleUpdate(study, dto.update);
     dto.remove && this.studyUpdaterService.handleRemove(em, study, dto.remove);
@@ -111,19 +100,12 @@ export class StudyService {
   }
 
   async remove(em: EntityManager, id: string, user: User) {
-    const study = await this.findOne(em, id, user, [
-      'tasks',
-      'preStudyQuestionnaire',
-      'postStudyQuestionnaire',
-    ]);
+    const study = await this.findOne(em, id, user, ['tasks', 'preStudyQuestionnaire', 'postStudyQuestionnaire']);
     study.softRemove();
     for (const task of study.tasks.$) {
       task.softRemove();
     }
-    for (const questionnaire of [
-      study.preStudyQuestionnaire?.$,
-      study.postStudyQuestionnaire?.$,
-    ]) {
+    for (const questionnaire of [study.preStudyQuestionnaire?.$, study.postStudyQuestionnaire?.$]) {
       questionnaire.softRemove();
     }
 

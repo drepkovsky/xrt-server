@@ -9,13 +9,7 @@ import { Module } from '@nestjs/common';
 
 @Module({
   imports: [RecordingModule],
-  providers: [
-    StudyService,
-    StudyGateway,
-    StudyUpdaterService,
-    ResultsService,
-    RespondentScheduler,
-  ],
+  providers: [StudyService, StudyGateway, StudyUpdaterService, ResultsService, RespondentScheduler],
   controllers: [StudyController],
 })
 export class StudyModule {}

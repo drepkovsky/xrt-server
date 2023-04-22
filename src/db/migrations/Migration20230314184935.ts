@@ -16,8 +16,6 @@ export class Migration20230314184935 extends Migration {
     this.addSql('alter table "respondent" drop column "finished_at";');
     this.addSql('alter table "respondent" drop column "abandoned_at";');
 
-    this.addSql(
-      'alter table "task_response" drop constraint "task_response_respondent_id_task_id_unique";',
-    );
+    this.addSql('alter table "task_response" drop constraint "task_response_respondent_id_task_id_unique";');
   }
 }

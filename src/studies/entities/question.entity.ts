@@ -1,20 +1,7 @@
 import { CRUDGroup } from '#app/global/types/common.types';
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
-import {
-  Collection,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  Ref,
-  Enum,
-  Property,
-} from '@mikro-orm/core';
-import {
-  IsOptional,
-  MaxLength,
-  MinLength,
-  ValidateNested,
-} from 'class-validator';
+import { Collection, Entity, ManyToOne, OneToMany, Ref, Enum, Property } from '@mikro-orm/core';
+import { IsOptional, MaxLength, MinLength, ValidateNested } from 'class-validator';
 import { Answer } from '#app/studies/entities/answer.entity';
 import { Questionnaire } from '#app/studies/entities/questionnaire.entity';
 import { Option } from '#app/studies/entities/option.entity';

@@ -4,22 +4,8 @@ import { normalizeEventName } from '#app/global/utils/task.utils';
 import { Study } from '#app/studies/entities/study.entity';
 import { TaskResponse } from '#app/studies/entities/task-response.entity';
 import type { EventArgs, EventSubscriber, Ref } from '@mikro-orm/core';
-import {
-  Collection,
-  Entity,
-  Index,
-  ManyToOne,
-  OneToMany,
-  Property,
-  Subscriber,
-} from '@mikro-orm/core';
-import {
-  IsOptional,
-  Matches,
-  MaxLength,
-  Min,
-  MinLength,
-} from 'class-validator';
+import { Collection, Entity, Index, ManyToOne, OneToMany, Property, Subscriber } from '@mikro-orm/core';
+import { IsOptional, Matches, MaxLength, Min, MinLength } from 'class-validator';
 import { nanoid } from 'nanoid';
 
 @Entity()
@@ -62,7 +48,7 @@ export class Task extends XrBaseEntity<Task> {
   @ManyToOne(() => Study, { ref: true })
   study!: Ref<Study>;
 
-  @OneToMany(() => TaskResponse, (r) => r.task)
+  @OneToMany(() => TaskResponse, r => r.task)
   responses: Collection<TaskResponse> = new Collection<TaskResponse>(this);
 }
 

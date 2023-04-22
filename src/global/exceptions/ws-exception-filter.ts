@@ -25,12 +25,8 @@ export class WsExceptionFilter extends BaseWsExceptionFilter {
         };
       } else if (typeof response === 'object') {
         ex = {
-          error:
-            'error' in response ? (response['error'] as any) : exception.name,
-          message:
-            'message' in response
-              ? (response['message'] as any)
-              : 'Unknown Error',
+          error: 'error' in response ? (response['error'] as any) : exception.name,
+          message: 'message' in response ? (response['message'] as any) : 'Unknown Error',
         };
       }
     } else if (exception instanceof Error) {

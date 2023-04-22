@@ -10,10 +10,7 @@ export const IoParam = createParamDecorator<string | undefined>(
 
     const route = socket.nsp.name;
 
-    const namespace = Reflect.getMetadata(
-      IO_NAMESPACE_METADATA,
-      ctx.getClass(),
-    ) as RegExp;
+    const namespace = Reflect.getMetadata(IO_NAMESPACE_METADATA, ctx.getClass()) as RegExp;
     const params = namespace ? parseNamespace(namespace, route) : {};
 
     return key ? params[key] : params;

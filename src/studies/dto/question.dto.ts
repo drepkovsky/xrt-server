@@ -7,6 +7,4 @@ import { PartialType, PickType } from '@nestjs/mapped-types';
 export class CreateQuestionDto extends PickType(Question, ['text', 'type']) {}
 
 @ValidationGroup(CRUDGroup.UPDATE)
-export class UpdateQuestionDto extends PartialType(
-  PickType(Question, ['id', 'text', 'type', 'options']),
-) {}
+export class UpdateQuestionDto extends PartialType(PickType(Question, ['id', 'text', 'type', 'options'])) {}

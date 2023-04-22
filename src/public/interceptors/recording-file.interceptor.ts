@@ -1,10 +1,6 @@
 import { DiskStorageEngine } from '#app/global/storage/disk-storage.engine';
 import { StorageService } from '@codebrew/nestjs-storage';
-import type {
-  CallHandler,
-  ExecutionContext,
-  NestInterceptor,
-} from '@nestjs/common';
+import type { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { Injectable } from '@nestjs/common/decorators/index.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 

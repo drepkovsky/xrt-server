@@ -9,8 +9,7 @@ import { AmazonWebServicesS3Storage } from '@slynova/flydrive-s3';
   imports: [
     RedisModule.registerAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) =>
-        configService.get(ConfigKey.REDIS),
+      useFactory: (configService: ConfigService) => configService.get(ConfigKey.REDIS),
       imports: [ConfigModule],
     }),
   ],
@@ -18,9 +17,6 @@ import { AmazonWebServicesS3Storage } from '@slynova/flydrive-s3';
 })
 export class GlobalModule {
   constructor(private readonly storageService: StorageService) {
-    this.storageService.registerDriver(
-      DriverType.S3,
-      AmazonWebServicesS3Storage,
-    );
+    this.storageService.registerDriver(DriverType.S3, AmazonWebServicesS3Storage);
   }
 }

@@ -10,32 +10,15 @@ export function signData(
   return crypto.createHmac(alg, secret).update(data).digest(encoding);
 }
 
-export function hashData(
-  data: string,
-  alg = 'sha256',
-  encoding: crypto.BinaryToTextEncoding = 'base64',
-): string {
+export function hashData(data: string, alg = 'sha256', encoding: crypto.BinaryToTextEncoding = 'base64'): string {
   return crypto.createHash(alg).update(data).digest(encoding);
 }
 
-export function verifyDataSignature(
-  data: string,
-  secret: string,
-  signature: string,
-  alg = 'sha256',
-): boolean {
-  return crypto.timingSafeEqual(
-    Buffer.from(signData(data, secret, alg)),
-    Buffer.from(signature),
-  );
+export function verifyDataSignature(data: string, secret: string, signature: string, alg = 'sha256'): boolean {
+  return crypto.timingSafeEqual(Buffer.from(signData(data, secret, alg)), Buffer.from(signature));
 }
 
-export function signUrl(
-  url: string,
-  secret: string,
-  signatureParam = 'sign',
-  alg = 'sha256',
-): string {
+export function signUrl(url: string, secret: string, signatureParam = 'sign', alg = 'sha256'): string {
   const urlObject = new URL(url);
   urlObject.searchParams.sort();
 
@@ -45,12 +28,7 @@ export function signUrl(
   return urlObject.href;
 }
 
-export function verifyUrlSignature(
-  url: string,
-  secret: string,
-  signatureParam = 'sign',
-  alg = 'sha256',
-): boolean {
+export function verifyUrlSignature(url: string, secret: string, signatureParam = 'sign', alg = 'sha256'): boolean {
   const urlObject = new URL(url);
   urlObject.searchParams.sort();
 

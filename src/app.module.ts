@@ -31,10 +31,7 @@ import { AuthModule } from '#app/auth/auth.module';
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
-        transport:
-          process.env.NODE_ENV !== 'production'
-            ? { target: 'pino-pretty' }
-            : undefined,
+        transport: process.env.NODE_ENV !== 'production' ? { target: 'pino-pretty' } : undefined,
       },
     }),
     ConfigModule.forRoot({
@@ -75,14 +72,9 @@ import { AuthModule } from '#app/auth/auth.module';
   ],
 })
 export class AppModule {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly redisService: RedisService,
-  ) {}
+  constructor(private readonly configService: ConfigService, private readonly redisService: RedisService) {}
   configure(consumer: MiddlewareConsumer) {
-    const sessionConfig = this.configService.get<SessionConfig>(
-      ConfigKey.SESSION,
-    );
+    const sessionConfig = this.configService.get<SessionConfig>(ConfigKey.SESSION);
 
     const client = this.redisService.getClient(RedisClient.SESSION);
     const redisStore = new RedisStore({ client });

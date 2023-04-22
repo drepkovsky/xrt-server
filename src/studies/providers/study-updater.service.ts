@@ -1,15 +1,8 @@
 import { isNullish } from '#app/global/utils/misc.utils';
 import type { UpdateQuestionDto } from '#app/studies/dto/question.dto';
 import type { UpdateQuestionnaireDto } from '#app/studies/dto/questionnaire.dto';
-import type {
-  StudyAddPayloadDto,
-  StudyRemovePayloadDto,
-  StudyUpdatePayloadDto,
-} from '#app/studies/dto/study.dto';
-import {
-  StudyAddResource,
-  StudyRemoveResource,
-} from '#app/studies/dto/study.dto';
+import type { StudyAddPayloadDto, StudyRemovePayloadDto, StudyUpdatePayloadDto } from '#app/studies/dto/study.dto';
+import { StudyAddResource, StudyRemoveResource } from '#app/studies/dto/study.dto';
 import type { UpdateTaskDto } from '#app/studies/dto/task.dto';
 import { Option } from '#app/studies/entities/option.entity';
 import { Question, QuestionType } from '#app/studies/entities/question.entity';
@@ -22,9 +15,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 type UpdatableStudy = Loaded<
   Study,
-  | 'tasks'
-  | 'preStudyQuestionnaire.questions.options'
-  | 'postStudyQuestionnaire.questions.options'
+  'tasks' | 'preStudyQuestionnaire.questions.options' | 'postStudyQuestionnaire.questions.options'
 >;
 
 @Injectable()
@@ -63,14 +54,8 @@ export class StudyUpdaterService {
     }
   }
 
-  private updateQuestionnaires(
-    study: UpdatableStudy,
-    dto: StudyUpdatePayloadDto,
-  ) {
-    for (const qst of [
-      'preStudyQuestionnaire',
-      'postStudyQuestionnaire',
-    ] as const) {
+  private updateQuestionnaires(study: UpdatableStudy, dto: StudyUpdatePayloadDto) {
+    for (const qst of ['preStudyQuestionnaire', 'postStudyQuestionnaire'] as const) {
       if (dto[qst]) {
         const questionnaire = study[qst].$;
         this.updateQuestions(questionnaire, dto[qst]);
@@ -78,10 +63,7 @@ export class StudyUpdaterService {
     }
   }
 
-  private updateQuestions(
-    questionnaire: Loaded<Questionnaire, 'questions.options'>,
-    dto: UpdateQuestionnaireDto,
-  ) {
+  private updateQuestions(questionnaire: Loaded<Questionnaire, 'questions.options'>, dto: UpdateQuestionnaireDto) {
     const questionMap = new Map<string, UpdateQuestionDto>();
     for (const questionDto of dto.questions) {
       questionMap.set(questionDto.id, questionDto);
@@ -117,32 +99,20 @@ export class StudyUpdaterService {
   }
 
   // REMOVAL
-  handleRemove(
-    em: EntityManager,
-    study: UpdatableStudy,
-    dto: StudyRemovePayloadDto,
-  ) {
-    if (dto.resource === StudyRemoveResource.TASK)
-      return this.removeTask(em, study, dto);
+  handleRemove(em: EntityManager, study: UpdatableStudy, dto: StudyRemovePayloadDto) {
+    if (dto.resource === StudyRemoveResource.TASK) return this.removeTask(em, study, dto);
 
-    if (dto.resource === StudyRemoveResource.QUESTIONNAIRE)
-      return this.removeQuestionnaire(em, study, dto);
+    if (dto.resource === StudyRemoveResource.QUESTIONNAIRE) return this.removeQuestionnaire(em, study, dto);
 
-    if (dto.resource === StudyRemoveResource.QUESTION)
-      return this.removeQuestion(em, study, dto);
+    if (dto.resource === StudyRemoveResource.QUESTION) return this.removeQuestion(em, study, dto);
 
-    if (dto.resource === StudyRemoveResource.OPTION)
-      return this.removeOption(em, study, dto);
+    if (dto.resource === StudyRemoveResource.OPTION) return this.removeOption(em, study, dto);
   }
 
-  private removeTask(
-    em: EntityManager,
-    study: UpdatableStudy,
-    dto: StudyRemovePayloadDto,
-  ) {
-    const task = study.tasks.getItems().find((t) => t.id === dto.id);
+  private removeTask(em: EntityManager, study: UpdatableStudy, dto: StudyRemovePayloadDto) {
+    const task = study.tasks.getItems().find(t => t.id === dto.id);
     const order = task.order;
-    study.tasks.getItems().forEach((t) => {
+    study.tasks.getItems().forEach(t => {
       if (t.order > order) {
         t.order--;
       }
@@ -152,11 +122,7 @@ export class StudyUpdaterService {
     em.remove(task);
   }
 
-  private removeQuestionnaire(
-    em: EntityManager,
-    study: UpdatableStudy,
-    dto: StudyRemovePayloadDto,
-  ) {
+  private removeQuestionnaire(em: EntityManager, study: UpdatableStudy, dto: StudyRemovePayloadDto) {
     if (dto.id === study.preStudyQuestionnaire.id) {
       study.preStudyQuestionnaire = null;
       em.remove(study.preStudyQuestionnaire);
@@ -169,11 +135,7 @@ export class StudyUpdaterService {
     em.remove(em.getReference(Questionnaire, dto.id));
   }
 
-  private removeQuestion(
-    em: EntityManager,
-    study: UpdatableStudy,
-    dto: StudyRemovePayloadDto,
-  ) {
+  private removeQuestion(em: EntityManager, study: UpdatableStudy, dto: StudyRemovePayloadDto) {
     const questionnaires = this.getAllQuestionnaires(study);
     for (const questionnaire of questionnaires) {
       questionnaire.questions.remove(em.getReference(Question, dto.id));
@@ -181,11 +143,7 @@ export class StudyUpdaterService {
     em.remove(em.getReference(Question, dto.id));
   }
 
-  private removeOption(
-    em: EntityManager,
-    study: UpdatableStudy,
-    dto: StudyRemovePayloadDto,
-  ) {
+  private removeOption(em: EntityManager, study: UpdatableStudy, dto: StudyRemovePayloadDto) {
     const questionnaires = this.getAllQuestionnaires(study);
     for (const questionnaire of questionnaires) {
       for (const question of questionnaire.questions) {
@@ -204,18 +162,13 @@ export class StudyUpdaterService {
     if (dto.resource === StudyAddResource.PRE_STUDY_QUESTIONNAIRE)
       return this.addQuestionnaire(em, study, 'preStudyQuestionnaire');
 
-    if (dto.resource === StudyAddResource.QUESTION)
-      return this.addQuestion(em, study, dto);
+    if (dto.resource === StudyAddResource.QUESTION) return this.addQuestion(em, study, dto);
 
-    if (dto.resource === StudyAddResource.OPTION)
-      return this.addOption(em, study, dto);
+    if (dto.resource === StudyAddResource.OPTION) return this.addOption(em, study, dto);
   }
 
   private addTask(em: EntityManager, study: UpdatableStudy) {
-    const highestOrder = Math.max(
-      ...study.tasks.$.getItems().map((t) => t.order),
-      0,
-    );
+    const highestOrder = Math.max(...study.tasks.$.getItems().map(t => t.order), 0);
 
     const order = highestOrder + 1;
     const task = em.create(Task, {
@@ -234,11 +187,7 @@ export class StudyUpdaterService {
     study[field] = wrap(questionnaire).toReference() as any;
   }
 
-  private addQuestion(
-    em: EntityManager,
-    study: UpdatableStudy,
-    dto: StudyAddPayloadDto,
-  ) {
+  private addQuestion(em: EntityManager, study: UpdatableStudy, dto: StudyAddPayloadDto) {
     const question = em.create(Question, {
       text: '',
       type: QuestionType.TEXT,
@@ -253,11 +202,7 @@ export class StudyUpdaterService {
     study.postStudyQuestionnaire.$.questions.add(question);
   }
 
-  private addOption(
-    em: EntityManager,
-    study: UpdatableStudy,
-    dto: StudyAddPayloadDto,
-  ) {
+  private addOption(em: EntityManager, study: UpdatableStudy, dto: StudyAddPayloadDto) {
     const option = em.create(Option, dto);
 
     const questionnaires = this.getAllQuestionnaires(study);
@@ -271,9 +216,6 @@ export class StudyUpdaterService {
   }
 
   private getAllQuestionnaires(study: UpdatableStudy) {
-    return [
-      study.preStudyQuestionnaire?.$,
-      study.postStudyQuestionnaire?.$,
-    ].filter((q) => !!q);
+    return [study.preStudyQuestionnaire?.$, study.postStudyQuestionnaire?.$].filter(q => !!q);
   }
 }

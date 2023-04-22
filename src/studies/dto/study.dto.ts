@@ -6,18 +6,9 @@ import { UpdateTaskDto } from '#app/studies/dto/task.dto';
 import { Study } from '#app/studies/entities/study.entity';
 import { PickType } from '@nestjs/mapped-types';
 import { Type } from 'class-transformer';
-import {
-  IsEnum,
-  IsOptional,
-  IsString,
-  ValidateIf,
-  ValidateNested,
-} from 'class-validator';
+import { IsEnum, IsOptional, IsString, ValidateIf, ValidateNested } from 'class-validator';
 
-export class StudyUpdatePayloadDto extends PickType(Study, [
-  'name',
-  'description',
-]) {
+export class StudyUpdatePayloadDto extends PickType(Study, ['name', 'description']) {
   @ValidateNested({ each: true })
   @Type(() => UpdateTaskDto)
   tasks?: UpdateTaskDto[];
@@ -41,7 +32,7 @@ export class StudyRemovePayloadDto {
   @IsEnum(StudyRemoveResource)
   resource: StudyRemoveResource;
 
-  @ValidateIf((o) => o.resource === StudyRemoveResource.TASK)
+  @ValidateIf(o => o.resource === StudyRemoveResource.TASK)
   @IsString()
   id: string;
 }
@@ -57,11 +48,11 @@ export class StudyAddPayloadDto {
   @IsEnum(StudyAddResource)
   resource: StudyAddResource;
 
-  @ValidateIf((o) => o.resource === StudyAddResource.QUESTION)
+  @ValidateIf(o => o.resource === StudyAddResource.QUESTION)
   @IsString()
   questionnaireId?: string;
 
-  @ValidateIf((o) => o.resource === StudyAddResource.OPTION)
+  @ValidateIf(o => o.resource === StudyAddResource.OPTION)
   @IsString()
   questionId?: string;
 }

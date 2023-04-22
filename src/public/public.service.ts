@@ -1,18 +1,12 @@
 import type { AnswerDto } from '#app/public/dto/answer.dto';
-import {
-  Recording,
-  RecordingType,
-} from '#app/recording/entities/recording.entity';
+import { Recording, RecordingType } from '#app/recording/entities/recording.entity';
 import { RecordingService } from '#app/recording/recording.service';
 import type { CreateEventDto } from '#app/studies/dto/event.dto';
 import { Answer } from '#app/studies/entities/answer.entity';
 import { Event } from '#app/studies/entities/event.entity';
 import { Option } from '#app/studies/entities/option.entity';
 import { Question } from '#app/studies/entities/question.entity';
-import {
-  Respondent,
-  RespondentStatus,
-} from '#app/studies/entities/respondents.entity';
+import { Respondent, RespondentStatus } from '#app/studies/entities/respondents.entity';
 import { Study } from '#app/studies/entities/study.entity';
 import { TaskResponse } from '#app/studies/entities/task-response.entity';
 import { Task } from '#app/studies/entities/task.entity';
@@ -28,17 +22,11 @@ export class PublicService {
 
   constructor(private readonly recordingService: RecordingService) {}
 
-  async startRun(
-    em: EntityManager,
-    study: Study,
-    session: Session & Partial<SessionData>,
-  ) {
+  async startRun(em: EntityManager, study: Study, session: Session & Partial<SessionData>) {
     // TODO: for now we will run study again to preserve whole recording, find out better way
     if (session.runs && session.runs[study.token]) {
       this.logger.debug(
-        `Study ${study.token} already started for respondent ${
-          session.runs[study.token].respondentId
-        }`,
+        `Study ${study.token} already started for respondent ${session.runs[study.token].respondentId}`,
       );
 
       //   set old respondent as abandoned
@@ -63,25 +51,16 @@ export class PublicService {
       tasksDone: [],
     };
 
-    this.logger.debug(
-      `Started study ${study.token} for respondent ${respondent.id}`,
-    );
+    this.logger.debug(`Started study ${study.token} for respondent ${respondent.id}`);
 
     await promisify(session.save).call(session);
 
-    const recordings = this.recordingService.createForRespondent(
-      em,
-      wrap(respondent).toReference(),
-    );
+    const recordings = this.recordingService.createForRespondent(em, wrap(respondent).toReference());
 
     return this.getRespondentRecordings(recordings);
   }
 
-  async getNextTask(
-    em: EntityManager,
-    study: Study,
-    session: Session & Partial<SessionData>,
-  ) {
+  async getNextTask(em: EntityManager, study: Study, session: Session & Partial<SessionData>) {
     this.logger.debug(`Getting next task for study ${study.token}`);
 
     const run = session.runs?.[study.token];
@@ -122,18 +101,12 @@ export class PublicService {
 
     await promisify(session.save).call(session);
 
-    this.logger.debug(
-      `Started task ${currentTask.id} for respondent ${run.respondentId}`,
-    );
+    this.logger.debug(`Started task ${currentTask.id} for respondent ${run.respondentId}`);
 
     return currentTask;
   }
 
-  async finishTask(
-    em: EntityManager,
-    study: Study,
-    session: Session & Partial<SessionData>,
-  ) {
+  async finishTask(em: EntityManager, study: Study, session: Session & Partial<SessionData>) {
     const run = session.runs?.[study.token];
     if (!run) {
       throw new BadRequestException('You have not started this study');
@@ -161,18 +134,12 @@ export class PublicService {
 
     await promisify(session.save).call(session);
 
-    this.logger.debug(
-      `Finished task ${taskResponse.task.id} for respondent ${taskResponse.respondent.id}`,
-    );
+    this.logger.debug(`Finished task ${taskResponse.task.id} for respondent ${taskResponse.respondent.id}`);
 
     return { success: true };
   }
 
-  async finishRun(
-    em: EntityManager,
-    study: Study,
-    session: Session & Partial<SessionData>,
-  ) {
+  async finishRun(em: EntityManager, study: Study, session: Session & Partial<SessionData>) {
     const run = session.runs?.[study.token];
 
     if (!run) {
@@ -194,9 +161,7 @@ export class PublicService {
     run.tasksDone.push(run.currentTaskId);
     run.currentTaskId = undefined;
 
-    this.logger.debug(
-      `Finished study ${study.token} for respondent ${respondent.id}`,
-    );
+    this.logger.debug(`Finished study ${study.token} for respondent ${respondent.id}`);
     // clear session if development
     // if (process.env.NODE_ENV !== 'production') {
     session.runs = undefined;
@@ -206,12 +171,7 @@ export class PublicService {
     return { success: true };
   }
 
-  async answerQuestion(
-    em: EntityManager,
-    study: Study,
-    session: Session & Partial<SessionData>,
-    dto: AnswerDto,
-  ) {
+  async answerQuestion(em: EntityManager, study: Study, session: Session & Partial<SessionData>, dto: AnswerDto) {
     const run = session.runs?.[study.token];
     if (!run) {
       throw new BadRequestException('You have not started this study');
@@ -239,11 +199,7 @@ export class PublicService {
     return { success: true };
   }
 
-  async processRecording(
-    em: EntityManager,
-    token: string,
-    file: Express.Multer.File,
-  ) {
+  async processRecording(em: EntityManager, token: string, file: Express.Multer.File) {
     const recording = await em.findOne(Recording, { token });
 
     if (!recording) {
@@ -256,12 +212,7 @@ export class PublicService {
     return { success: true };
   }
 
-  async createEvent(
-    em: EntityManager,
-    study: Study,
-    session: Session & Partial<SessionData>,
-    dto: CreateEventDto,
-  ) {
+  async createEvent(em: EntityManager, study: Study, session: Session & Partial<SessionData>, dto: CreateEventDto) {
     const run = session.runs?.[study.token];
 
     const event = await em.create(Event, {

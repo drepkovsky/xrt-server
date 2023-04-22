@@ -1,7 +1,4 @@
-import type {
-  FieldError,
-  ValidationError,
-} from '#app/global/types/error.types';
+import type { FieldError, ValidationError } from '#app/global/types/error.types';
 
 export function buildValidationErrorPayload(
   fieldErrors: FieldError[] | FieldError,

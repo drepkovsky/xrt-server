@@ -16,11 +16,7 @@ import { Injectable } from '@nestjs/common';
 export class ResultsService {
   constructor(private readonly recordingService: RecordingService) {}
 
-  async getResults(
-    em: EntityManager,
-    studyId: string,
-    user: User,
-  ): Promise<StudyResults> {
+  async getResults(em: EntityManager, studyId: string, user: User): Promise<StudyResults> {
     const study = await em.findOne(
       Study,
       {
@@ -47,10 +43,7 @@ export class ResultsService {
   }
 
   async getRespondents(
-    study: Loaded<
-      Study,
-      'respondents.responses' | 'respondents.recordings' | 'tasks'
-    >,
+    study: Loaded<Study, 'respondents.responses' | 'respondents.recordings' | 'tasks'>,
   ): Promise<RespondentResults> {
     const statistics: RespondentStatistics = {
       abandoned: 0,
@@ -67,8 +60,7 @@ export class ResultsService {
     // TODO: calculate statistics in one query, not in JS
     for (const respondent of study.respondents.getItems()) {
       const time = respondent.finishedAt
-        ? (respondent.finishedAt.getTime() - respondent.createdAt.getTime()) /
-          1000
+        ? (respondent.finishedAt.getTime() - respondent.createdAt.getTime()) / 1000
         : 0;
       statistics.total++;
       statistics.totalTime += time;

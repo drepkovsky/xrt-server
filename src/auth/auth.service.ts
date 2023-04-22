@@ -10,10 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private jwtService: JwtService,
-    private userService: UsersService,
-  ) {}
+  constructor(private jwtService: JwtService, private userService: UsersService) {}
 
   async login(user: User) {
     const payload: JwtPayload = { sub: user.id };

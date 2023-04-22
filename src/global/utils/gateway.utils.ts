@@ -3,12 +3,10 @@
  * allow regex inside the namespace like this: something/:somethingId/:somethingElseId([a-z]+) or something/:type(video|audio)
  **/
 export function buildNamespaceRegex(namespace: string) {
-  const parts = namespace.split('/').map((part) => {
+  const parts = namespace.split('/').map(part => {
     if (part.startsWith(':')) {
       const [param, regex] = part.slice(1).split('(');
-      return regex
-        ? `(?<${param}>${regex.slice(0, -1)})`
-        : `(?<${param}>[^/]+)`;
+      return regex ? `(?<${param}>${regex.slice(0, -1)})` : `(?<${param}>[^/]+)`;
     }
     return part;
   });

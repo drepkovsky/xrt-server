@@ -1,21 +1,9 @@
-import {
-  REDIS_CLIENTS_TOKEN,
-  REDIS_DEFAULT_CLIENT_NAME,
-} from '#app/global/redis/redis.constants';
+import { REDIS_CLIENTS_TOKEN, REDIS_DEFAULT_CLIENT_NAME } from '#app/global/redis/redis.constants';
 import { REDIS_MODULE_OPTIONS_TOKEN } from '#app/global/redis/redis.module-definition';
-import type {
-  RedisClientsMap,
-  RedisModuleOptions,
-  RedisModuleOptionsMulti,
-} from '#app/global/redis/redis.types';
+import type { RedisClientsMap, RedisModuleOptions, RedisModuleOptionsMulti } from '#app/global/redis/redis.types';
 import { Redis } from 'ioredis';
 
-function buildClient({
-  url,
-  name,
-  onClientReady,
-  ...options
-}: RedisModuleOptions) {
+function buildClient({ url, name, onClientReady, ...options }: RedisModuleOptions) {
   const client = url ? new Redis(url) : new Redis(options);
   onClientReady && onClientReady(client);
   return client;
@@ -29,7 +17,7 @@ export function registerClients() {
 
       const optionsArr = Array.isArray(options) ? options : [options];
 
-      optionsArr.forEach((option) => {
+      optionsArr.forEach(option => {
         const name = option.name || REDIS_DEFAULT_CLIENT_NAME;
         if (clients.has(name)) {
           throw new Error(`Redis client with name "${name}" already exists!`);

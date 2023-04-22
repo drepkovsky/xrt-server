@@ -1,12 +1,6 @@
 import { CRUDGroup } from '#app/global/types/common.types';
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
-import {
-  Collection,
-  Entity,
-  ManyToMany,
-  ManyToOne,
-  Property,
-} from '@mikro-orm/core';
+import { Collection, Entity, ManyToMany, ManyToOne, Property } from '@mikro-orm/core';
 import { Ref } from '@mikro-orm/core';
 import { IsOptional, MaxLength, MinLength } from 'class-validator';
 import { Answer } from '#app/studies/entities/answer.entity';
@@ -23,6 +17,6 @@ export class Option extends XrBaseEntity<Option> {
   @ManyToOne(() => Question, { ref: true })
   question!: Ref<Question>;
 
-  @ManyToMany(() => Answer, (a) => a.options)
+  @ManyToMany(() => Answer, a => a.options)
   answers: Collection<Answer> = new Collection<Answer>(this);
 }
