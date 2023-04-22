@@ -35,7 +35,7 @@ export class StudyUpdaterService {
   private updateStudy(study: UpdatableStudy, dto: StudyUpdatePayloadDto) {
     for (const field of this.studyUpdatableFields) {
       if (!isNullish(dto[field])) {
-        study[field] = dto[field];
+        study[field as any] = dto[field];
       }
     }
   }
@@ -76,7 +76,7 @@ export class StudyUpdaterService {
 
         for (const field of this.questionUpdatableFields) {
           if (!isNullish(questionDto[field])) {
-            question[field] = questionDto[field] as any;
+            question[field as any] = questionDto[field] as any;
           }
         }
       }

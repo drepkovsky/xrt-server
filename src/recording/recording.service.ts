@@ -36,9 +36,9 @@ export class RecordingService {
     const recordings: Recording[] = [];
 
     for (const type of Object.values(RecordingType)) {
-      const r = new Recording({
-        respondent: respondent,
-        type: type,
+      const r = em.create(Recording, {
+        respondent,
+        type,
       });
       em.persist(r);
       recordings.push(r);
