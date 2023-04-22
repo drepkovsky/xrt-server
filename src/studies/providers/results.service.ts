@@ -26,8 +26,14 @@ export class ResultsService {
       {
         populate: ['respondents.responses', 'respondents.recordings', 'tasks'],
         orderBy: {
-          createdAt: QueryOrder.asc,
+          respondents: {
+            createdAt: QueryOrder.ASC,
+            responses: {
+              createdAt: QueryOrder.ASC,
+            },
+          },
         },
+        cache: false,
       },
     );
 
@@ -55,7 +61,7 @@ export class ResultsService {
     };
 
     const resolvedRespondents: ResolvedRespondent[] = [];
-    let i = 0;
+    let i = 1;
 
     // TODO: calculate statistics in one query, not in JS
     for (const respondent of study.respondents.getItems()) {
