@@ -8,7 +8,7 @@ export class AnswerDto {
   @IsOptional()
   text?: string;
 
-  @IsString()
+  @IsString({ each: true })
   @IsOptional()
-  optionIds: string[];
+  optionIds?: string[];
 }

@@ -175,10 +175,6 @@ export class PublicService {
       throw new BadRequestException('You have not started this study');
     }
 
-    if (!run.currentTaskId) {
-      throw new BadRequestException('You have not started any task');
-    }
-
     const answer = new Answer();
 
     answer.respondent = em.getReference(Respondent, run.respondentId, {
