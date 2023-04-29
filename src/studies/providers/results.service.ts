@@ -24,7 +24,13 @@ export class ResultsService {
         createdBy: user.id,
       },
       {
-        populate: ['respondents.responses', 'respondents.recordings', 'tasks'],
+        populate: [
+          'respondents.responses',
+          'respondents.recordings',
+          'respondents.answers.options',
+          'respondents.events',
+          'tasks',
+        ],
         orderBy: {
           respondents: {
             createdAt: QueryOrder.ASC,
@@ -48,7 +54,10 @@ export class ResultsService {
   }
 
   async getRespondents(
-    study: Loaded<Study, 'respondents.responses' | 'respondents.recordings' | 'tasks'>,
+    study: Loaded<
+      Study,
+      'respondents.responses' | 'respondents.recordings' | 'respondents.answers' | 'respondents.events' | 'tasks'
+    >,
   ): Promise<RespondentResults> {
     const statistics: RespondentStatistics = {
       abandoned: 0,

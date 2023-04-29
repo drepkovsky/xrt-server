@@ -5,6 +5,7 @@ import { Study } from '#app/studies/entities/study.entity';
 import { TaskResponse } from '#app/studies/entities/task-response.entity';
 import { Collection, Entity, Enum, ManyToOne, OneToMany, Property } from '@mikro-orm/core';
 import type { Ref } from '@mikro-orm/core';
+import { Answer } from '#app/studies/entities/answer.entity';
 
 export enum RespondentStatus {
   RUNNING = 'RUNNING',
@@ -25,6 +26,9 @@ export class Respondent extends XrBaseEntity<Respondent> {
 
   @OneToMany(() => Event, e => e.respondent)
   events: Collection<Event> = new Collection<Event>(this);
+
+  @OneToMany(() => Answer, a => a.respondent)
+  answers: Collection<Answer> = new Collection<Answer>(this);
 
   @Enum(() => RespondentStatus)
   status: RespondentStatus = RespondentStatus.RUNNING;
