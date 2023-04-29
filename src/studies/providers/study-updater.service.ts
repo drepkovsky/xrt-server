@@ -101,11 +101,8 @@ export class StudyUpdaterService {
   // REMOVAL
   handleRemove(em: EntityManager, study: UpdatableStudy, dto: StudyRemovePayloadDto) {
     if (dto.resource === StudyRemoveResource.TASK) return this.removeTask(em, study, dto);
-
     if (dto.resource === StudyRemoveResource.QUESTIONNAIRE) return this.removeQuestionnaire(em, study, dto);
-
     if (dto.resource === StudyRemoveResource.QUESTION) return this.removeQuestion(em, study, dto);
-
     if (dto.resource === StudyRemoveResource.OPTION) return this.removeOption(em, study, dto);
   }
 

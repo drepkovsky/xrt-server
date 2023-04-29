@@ -4,10 +4,10 @@ import { Questionnaire } from '#app/studies/entities/questionnaire.entity';
 import { Respondent } from '#app/studies/entities/respondents.entity';
 import { Task } from '#app/studies/entities/task.entity';
 import { User } from '#app/users/entities/user.entity';
-import { Collection, Entity, Enum, ManyToOne, OneToMany, Property, Unique } from '@mikro-orm/core';
+import type { Ref } from '@mikro-orm/core';
+import { Collection, Entity, Enum, ManyToOne, OneToMany, Property, QueryOrder, Unique } from '@mikro-orm/core';
 import { IsOptional, MaxLength, MinLength, ValidateNested } from 'class-validator';
 import { nanoid } from 'nanoid';
-import type { Ref } from '@mikro-orm/core';
 
 export enum StudyStatus {
   DRAFT = 'draft',
@@ -41,7 +41,7 @@ export class Study extends XrBaseEntity<Study> {
   @ManyToOne(() => User, { serializer: (u: User) => u?.name, ref: true })
   createdBy!: Ref<User>;
 
-  @OneToMany(() => Task, 'study')
+  @OneToMany(() => Task, 'study', { orderBy: { id: QueryOrder.ASC }, orphanRemoval: true })
   tasks: Collection<Task> = new Collection<Task>(this);
 
   @OneToMany(() => Respondent, r => r.study)

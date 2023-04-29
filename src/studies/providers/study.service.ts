@@ -1,7 +1,7 @@
 import type { UpdateStudyDto } from '#app/studies/dto/study.dto';
 import { Study, StudyStatus } from '#app/studies/entities/study.entity';
 import { StudyUpdaterService } from '#app/studies/providers/study-updater.service';
-import type { User } from '#app/users/entities/user.entity';
+import { User } from '#app/users/entities/user.entity';
 import type { EntityManager, Loaded, Populate } from '@mikro-orm/core';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { nanoid } from 'nanoid';
@@ -22,9 +22,7 @@ export class StudyService {
     const name = 'New Study #' + nanoid(4);
     const study = em.create(Study, {
       name,
-      createdBy: {
-        id: user.id,
-      },
+      createdBy: em.getReference(User, user.id),
     });
     await em.persistAndFlush(study);
     return study;
@@ -74,7 +72,7 @@ export class StudyService {
 
     if (!result) throw new NotFoundException(`Study with id ${id} not found`);
 
-    return result;
+    return result as Loaded<Study, R>;
   }
   async update(
     em: EntityManager,
@@ -96,7 +94,9 @@ export class StudyService {
     dto.remove && this.studyUpdaterService.handleRemove(em, study, dto.remove);
     dto.add && this.studyUpdaterService.handleAdd(em, study, dto.add);
 
-    return em.persistAndFlush(study).then(() => study);
+    await em.persistAndFlush(study);
+
+    return study;
   }
 
   async remove(em: EntityManager, id: string, user: User) {

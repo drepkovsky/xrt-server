@@ -1,6 +1,6 @@
 import { CRUDGroup } from '#app/global/types/common.types';
 import { XrBaseEntity } from '#app/global/entities/xr-base.entity';
-import { Collection, Entity, ManyToOne, OneToMany, Ref, Enum, Property } from '@mikro-orm/core';
+import { Collection, Entity, Enum, ManyToOne, OneToMany, Property, QueryOrder, Ref } from '@mikro-orm/core';
 import { IsOptional, MaxLength, MinLength, ValidateNested } from 'class-validator';
 import { Answer } from '#app/studies/entities/answer.entity';
 import { Questionnaire } from '#app/studies/entities/questionnaire.entity';
@@ -33,6 +33,6 @@ export class Question extends XrBaseEntity<Question> {
   @Type(() => Option)
   @ValidateNested({ each: true, groups: [CRUDGroup.UPDATE] })
   @IsOptional({ groups: [CRUDGroup.UPDATE] })
-  @OneToMany(() => Option, 'question')
+  @OneToMany(() => Option, 'question', { orderBy: { id: QueryOrder.ASC }, orphanRemoval: true })
   options: Collection<Option> = new Collection<Option>(this);
 }
