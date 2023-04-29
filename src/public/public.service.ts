@@ -214,14 +214,18 @@ export class PublicService {
   async createEvent(em: EntityManager, study: Study, session: Session & Partial<SessionData>, dto: CreateEventDto) {
     const run = session.runs?.[study.token];
 
-    const event = await em.create(Event, {
+    if (!run) {
+      throw new BadRequestException('Run has not been started');
+    }
+
+    const event = em.create(Event, {
       respondent: em.getReference(Respondent, run.respondentId),
       ...dto,
     });
 
     await em.persistAndFlush(event);
 
-    return { sucess: true };
+    return { success: true };
   }
 
   private getRespondentRecordings(recordings: Recording[]) {
