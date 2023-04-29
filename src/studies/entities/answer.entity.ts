@@ -17,7 +17,7 @@ export class Answer extends XrBaseEntity<Answer> {
   text?: string;
 
   @ManyToMany(() => Option)
-  options?: Collection<Option> = new Collection<Option>(this);
+  options: Collection<Option> = new Collection<Option>(this);
 
   @ManyToOne(() => Respondent, { ref: true })
   respondent?: Ref<Respondent>;

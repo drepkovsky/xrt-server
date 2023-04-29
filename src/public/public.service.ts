@@ -11,7 +11,7 @@ import { Study } from '#app/studies/entities/study.entity';
 import { TaskResponse } from '#app/studies/entities/task-response.entity';
 import { Task } from '#app/studies/entities/task.entity';
 import type { EntityManager } from '@mikro-orm/core';
-import { wrap } from '@mikro-orm/core';
+import { Collection, wrap } from '@mikro-orm/core';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import type { Session, SessionData } from 'express-session';
 import { promisify } from 'util';
@@ -175,21 +175,18 @@ export class PublicService {
       throw new BadRequestException('You have not started this study');
     }
 
-    const answer = new Answer();
-
-    answer.respondent = em.getReference(Respondent, run.respondentId, {
-      wrapped: true,
+    console.log(dto);
+    const answer = em.create(Answer, {
+      respondent: em.getReference(Respondent, run.respondentId),
+      question: em.getReference(Question, dto.questionId),
+      text: dto.text,
     });
-    answer.question = em.getReference(Question, dto.questionId, {
-      wrapped: true,
-    });
+    await em.persistAndFlush(answer);
 
     answer.text = dto.text;
     for (const id of dto.optionIds) {
       answer.options.add(em.getReference(Option, id));
     }
-
-    await em.persistAndFlush(answer);
 
     return { success: true };
   }
