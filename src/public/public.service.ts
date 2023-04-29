@@ -56,7 +56,6 @@ export class PublicService {
     await promisify(session.save).call(session);
 
     const recordings = this.recordingService.createForRespondent(em, wrap(respondent).toReference());
-    console.log('recordings', recordings);
     return this.getRespondentRecordings(recordings);
   }
 
@@ -188,6 +187,7 @@ export class PublicService {
     answer.question = em.getReference(Question, dto.questionId, {
       wrapped: true,
     });
+
     answer.text = dto.text;
     for (const id of dto.optionIds) {
       answer.options.add(em.getReference(Option, id));

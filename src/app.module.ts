@@ -79,8 +79,6 @@ export class AppModule {
     const client = this.redisService.getClient(RedisClient.SESSION);
     const redisStore = new RedisStore({ client });
 
-    console.log(join(process.cwd(), 'storage'));
-
     consumer
       .apply(
         expressSession({

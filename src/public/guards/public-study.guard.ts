@@ -1,5 +1,5 @@
 import { Study } from '#app/studies/entities/study.entity';
-import { MikroORM } from '@mikro-orm/core';
+import { MikroORM, UseRequestContext } from '@mikro-orm/core';
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { ForbiddenException } from '@nestjs/common/exceptions/forbidden.exception.js';
@@ -16,7 +16,13 @@ export class PublicStudyGuard implements CanActivate {
     const token = request.headers['x-study-token'] || request.body[key] || request.query[key] || request.params[key];
 
     const study = await this.orm.em.transactional(em => {
-      return em.findOne(Study, { token });
+      return em.findOne(
+        Study,
+        { token },
+        {
+          populate: ['preStudyQuestionnaire.questions.options', 'postStudyQuestionnaire.questions.options'] as const,
+        },
+      );
     });
 
     request.publicStudy = study;
