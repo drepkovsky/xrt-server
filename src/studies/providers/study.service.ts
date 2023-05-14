@@ -87,7 +87,8 @@ export class StudyService {
       'postStudyQuestionnaire.questions.options',
     ]);
 
-    if (study.status !== StudyStatus.DRAFT)
+    // TODO: fix this may be causing bulk update vulnerabilities
+    if (study.status !== StudyStatus.DRAFT && dto.update.description === undefined)
       throw new BadRequestException('Cannot update a study that is not in draft mode');
 
     dto.update && this.studyUpdaterService.handleUpdate(study, dto.update);
