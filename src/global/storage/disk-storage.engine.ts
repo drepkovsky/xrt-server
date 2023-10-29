@@ -1,12 +1,10 @@
 import type { Storage } from '@slynova/flydrive';
 import type { Request } from 'express';
-import type { ParamsDictionary } from 'express-serve-static-core';
 import type multer from 'multer';
 import { nanoid } from 'nanoid';
-import type { ParsedQs } from 'qs';
 
 const defaultGetFilename = (
-  req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
+  req: Request,
   file: Express.Multer.File,
   callback: (error: Error | null, filename: string) => void,
 ) => {
@@ -30,7 +28,7 @@ export class DiskStorageEngine implements multer.StorageEngine {
   }
 
   _handleFile(
-    req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
+    req: Request,
     file: Express.Multer.File,
     callback: (error?: any, info?: Partial<Express.Multer.File>) => void,
   ): void {
@@ -47,11 +45,7 @@ export class DiskStorageEngine implements multer.StorageEngine {
       });
     });
   }
-  _removeFile(
-    req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
-    file: Express.Multer.File,
-    callback: (error: Error) => void,
-  ): void {
+  _removeFile(req: Request, file: Express.Multer.File, callback: (error: Error) => void): void {
     this.disk.delete(file.path).then(() => {
       callback(null);
     });

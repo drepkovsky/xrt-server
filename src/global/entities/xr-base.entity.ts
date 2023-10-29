@@ -55,11 +55,11 @@ export class XrBaseEntity<
 
       if (!value) return;
 
-      if (value instanceof Collection<XrBaseEntity<any>>) {
+      if (value instanceof Collection) {
         value.getItems().forEach(item => item.softDelete(suffix as any));
       }
 
-      if (value instanceof Reference<XrBaseEntity<any>>) {
+      if (value instanceof Reference) {
         value.getEntity().softDelete(suffix as any);
       }
 
